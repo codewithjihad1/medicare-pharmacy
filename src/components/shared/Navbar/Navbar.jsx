@@ -79,6 +79,12 @@ const Navbar = () => {
             >
               Shop
             </Link>
+            <Link
+              to="/categories"
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+            >
+              Categories
+            </Link>
           </div>
 
           {/* Right Side Icons */}
@@ -230,6 +236,13 @@ const Navbar = () => {
                 className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
               >
                 Shop
+              </Link>
+              <Link
+                to="/categories"
+                onClick={toggleMenu}
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Categories
               </Link>
               {!user && (
                 <Link
