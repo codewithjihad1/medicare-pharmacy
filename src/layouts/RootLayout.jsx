@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router'
 import Navbar from '../components/shared/Navbar/Navbar'
+import Footer from '../components/shared/Footer/Footer'
 
 const RootLayout = () => {
     return (
@@ -9,7 +10,7 @@ const RootLayout = () => {
             <main className="flex-grow bg-gray-50 dark:bg-gray-900">
                 <Outlet />
             </main>
-            {/* <Footer /> */}
+            <Footer />
         </div>
     )
 }
