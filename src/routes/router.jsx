@@ -4,6 +4,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import Home from "../pages/Home/Home";
 import Shop from "../pages/Shop/Shop";
 import Cart from "../pages/Cart/Cart";
+import Checkout from "../pages/Checkout/Checkout";
+import Invoice from "../pages/Invoice/Invoice";
 import CategoryList from "../pages/Category/CategoryList/CategoryList";
 import CategoryDetails from "../pages/Category/CategoryDetails/CategoryDetails";
 import Signup from "../pages/Auth/Signup/Signup";
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
             {
                 path: "cart",
                 Component: Cart,
+            },
+            {
+                path: "checkout",
+                Component: Checkout,
+            },
+            {
+                path: "invoice",
+                Component: Invoice,
             },
             {
                 path: "categories",
