@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { FaArrowLeft, FaUser, FaMapMarkerAlt, FaShoppingCart } from 'react-icons/fa';
@@ -55,7 +55,6 @@ const mockCartItems = [
 ];
 
 const Checkout = () => {
-    const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentStep, setCurrentStep] = useState(1);

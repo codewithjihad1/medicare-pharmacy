@@ -11,6 +11,16 @@ import CategoryDetails from "../pages/Category/CategoryDetails/CategoryDetails";
 import Signup from "../pages/Auth/Signup/Signup";
 import Login from "../pages/Auth/Login/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
+import AdminDashboard from "../pages/Dashboard/Admin/AdminDashboard";
+import UserDashboard from "../pages/Dashboard/User/UserDashboard";
+import AdminProtectedRoute from "../components/common/ProtectedRoute/AdminProtectedRoute";
+import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
+import AdminHome from "../pages/Dashboard/Admin/components/AdminHome/AdminHome";
+import ManageUsers from "../pages/Dashboard/Admin/components/ManageUsers/ManageUsers";
+import ManageCategory from "../pages/Dashboard/Admin/components/ManageCategory/ManageCategory";
+import PaymentManagement from "../pages/Dashboard/Admin/components/PaymentManagement/PaymentManagement";
+import SalesReport from "../pages/Dashboard/Admin/components/SalesReport/SalesReport";
+import ManageBanner from "../pages/Dashboard/Admin/components/ManageBanner/ManageBanner";
 
 const router = createBrowserRouter([
     {
@@ -62,6 +72,48 @@ const router = createBrowserRouter([
             {
                 path: "forgot-password",
                 Component: ForgotPassword,
+            },
+        ],
+    },
+    {
+        path: "/dashboard",
+        element: (
+            <ProtectedRoute>
+                <UserDashboard />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/dashboard/admin",
+        element: (
+            <AdminProtectedRoute>
+                <AdminDashboard />
+            </AdminProtectedRoute>
+        ),
+        children: [
+            {
+                path: "home",
+                element: <AdminHome />,
+            },
+            {
+                path: "users",
+                element: <ManageUsers />,
+            },
+            {
+                path: "categories",
+                element: <ManageCategory />,
+            },
+            {
+                path: "payments",
+                element: <PaymentManagement />,
+            },
+            {
+                path: "reports",
+                element: <SalesReport />,
+            },
+            {
+                path: "banners",
+                element: <ManageBanner />,
             },
         ],
     },
