@@ -13,6 +13,7 @@ import Login from "../pages/Auth/Login/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import AdminDashboard from "../pages/Dashboard/Admin/AdminDashboard";
 import UserDashboard from "../pages/Dashboard/User/UserDashboard";
+import SellerDashboard from "../pages/Dashboard/Seller/SellerDashboard";
 import AdminProtectedRoute from "../components/common/ProtectedRoute/AdminProtectedRoute";
 import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
 import AdminHome from "../pages/Dashboard/Admin/components/AdminHome/AdminHome";
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute>
                 <UserDashboard />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/dashboard/seller",
+        element: (
+            <ProtectedRoute>
+                <SellerDashboard />
             </ProtectedRoute>
         ),
     },

@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from 'react';
+import { FaDollarSign, FaPills, FaShoppingCart, FaClock, FaCheckCircle, FaEye } from 'react-icons/fa';
+import { useAuth } from '../../../../../hooks/useAuth';
+
+// Mock seller revenue data
+const mockSellerData = {
+    totalRevenue: 12476.30,
+    paidTotal: 9850.20,
+    pendingTotal: 2626.10,
+    totalMedicines: 24,
+    totalSales: 156,
+    pendingOrders: 12,
+    monthlyRevenue: [
+        { month: 'Jan', revenue: 2100 },
+        { month: 'Feb', revenue: 2800 },
+        { month: 'Mar', revenue: 2200 },
+        { month: 'Apr', revenue: 3100 },
+        { month: 'May', revenue: 2900 },
+        { month: 'Jun', revenue: 3200 }
+    ]
+};
+
+const SellerHome = () => {
+    const { user } = useAuth();
+    const [sellerData, setSellerData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate API call
+        setTimeout(() => {
+            setSellerData(mockSellerData);
+            setLoading(false);
+        }, 1000);
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            {/* Welcome Section */}
+            <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg p-6">
+                <h1 className="text-3xl font-bold mb-2">
+                    Welcome back, {user?.displayName || 'Seller'}!
+                </h1>
+                <p className="text-green-100">
+                    Manage your medicine inventory and track your sales performance
+                </p>
+            </div>
+
+            {/* Revenue Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                Total Revenue
+                            </p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                                ${sellerData.totalRevenue.toFixed(2)}
+                            </p>
+                            <p className="text-sm mt-1 text-green-600">
+                                ↗ 12.5% from last month
+                            </p>
+                        </div>
+                        <div className="p-3 rounded-full bg-green-500">
+                            <FaDollarSign className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                Paid Total
+                            </p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                                ${sellerData.paidTotal.toFixed(2)}
+                            </p>
+                            <p className="text-sm mt-1 text-blue-600">
+                                ↗ 8.3% from last month
+                            </p>
+                        </div>
+                        <div className="p-3 rounded-full bg-blue-500">
+                            <FaCheckCircle className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                Pending Total
+                            </p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                                ${sellerData.pendingTotal.toFixed(2)}
+                            </p>
+                            <p className="text-sm mt-1 text-orange-600">
+                                {sellerData.pendingOrders} pending orders
+                            </p>
+                        </div>
+                        <div className="p-3 rounded-full bg-orange-500">
+                            <FaClock className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                Total Medicines
+                            </p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                                {sellerData.totalMedicines}
+                            </p>
+                            <p className="text-sm mt-1 text-purple-600">
+                                Active inventory
+                            </p>
+                        </div>
+                        <div className="p-3 rounded-full bg-purple-500">
+                            <FaPills className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Sales Overview */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Sales Overview
+                    </h3>
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <span className="text-gray-600 dark:text-gray-400">Total Sales</span>
+                            <span className="font-semibold text-green-600">{sellerData.totalSales}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-gray-600 dark:text-gray-400">Pending Orders</span>
+                            <span className="font-semibold text-orange-600">{sellerData.pendingOrders}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div
+                                className="bg-green-600 h-2 rounded-full"
+                                style={{
+                                    width: `${((sellerData.totalSales - sellerData.pendingOrders) / sellerData.totalSales) * 100}%`
+                                }}
+                            ></div>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {(((sellerData.totalSales - sellerData.pendingOrders) / sellerData.totalSales) * 100).toFixed(1)}% completion rate
+                        </p>
+                    </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Recent Activity
+                    </h3>
+                    <div className="space-y-3">
+                        <div className="flex items-center p-3 bg-green-50 dark:bg-green-900 rounded-lg">
+                            <FaCheckCircle className="h-4 w-4 text-green-600 mr-3" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
+                                New sale: Paracetamol - $12.50
+                            </span>
+                        </div>
+                        <div className="flex items-center p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                            <FaShoppingCart className="h-4 w-4 text-blue-600 mr-3" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
+                                3 new orders received
+                            </span>
+                        </div>
+                        <div className="flex items-center p-3 bg-orange-50 dark:bg-orange-900 rounded-lg">
+                            <FaClock className="h-4 w-4 text-orange-600 mr-3" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
+                                2 payments pending approval
+                            </span>
+                        </div>
+                        <div className="flex items-center p-3 bg-purple-50 dark:bg-purple-900 rounded-lg">
+                            <FaEye className="h-4 w-4 text-purple-600 mr-3" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
+                                Medicine viewed 45 times today
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Monthly Revenue Chart Placeholder */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Monthly Revenue Trend
+                </h3>
+                <div className="grid grid-cols-6 gap-4">
+                    {sellerData.monthlyRevenue.map((month, index) => (
+                        <div key={index} className="text-center">
+                            <div className="bg-blue-100 dark:bg-blue-900 rounded-lg p-4 mb-2">
+                                <div
+                                    className="bg-blue-600 rounded-sm mx-auto"
+                                    style={{
+                                        height: `${(month.revenue / 3500) * 80}px`,
+                                        width: '20px'
+                                    }}
+                                ></div>
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">{month.month}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                ${month.revenue}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Quick Actions
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button className="p-4 bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-lg text-center transition-colors">
+                        <FaPills className="h-6 w-6 text-blue-600 mx-auto mb-2" />
+                        <span className="text-sm font-medium text-blue-600">Add Medicine</span>
+                    </button>
+                    <button className="p-4 bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 rounded-lg text-center transition-colors">
+                        <FaDollarSign className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                        <span className="text-sm font-medium text-green-600">View Payments</span>
+                    </button>
+                    <button className="p-4 bg-purple-50 dark:bg-purple-900 hover:bg-purple-100 dark:hover:bg-purple-800 rounded-lg text-center transition-colors">
+                        <FaEye className="h-6 w-6 text-purple-600 mx-auto mb-2" />
+                        <span className="text-sm font-medium text-purple-600">Advertise</span>
+                    </button>
+                    <button className="p-4 bg-orange-50 dark:bg-orange-900 hover:bg-orange-100 dark:hover:bg-orange-800 rounded-lg text-center transition-colors">
+                        <FaShoppingCart className="h-6 w-6 text-orange-600 mx-auto mb-2" />
+                        <span className="text-sm font-medium text-orange-600">Orders</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default SellerHome;
