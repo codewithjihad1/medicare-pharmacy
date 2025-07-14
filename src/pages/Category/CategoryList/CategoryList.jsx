@@ -2,71 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { FaChevronRight } from 'react-icons/fa';
 import Loading from '../../../components/ui/Loading/Loading';
-
-// Mock data for categories - In real app, this would come from API
-const mockCategories = [
-    {
-        id: 1,
-        name: 'Tablets',
-        slug: 'tablet',
-        description: 'Solid dosage forms containing active pharmaceutical ingredients',
-        icon: '💊',
-        color: 'blue',
-        medicineCount: 3,
-        image: 'https://via.placeholder.com/300x200?text=Tablets'
-    },
-    {
-        id: 2,
-        name: 'Syrups',
-        slug: 'syrup',
-        description: 'Liquid pharmaceutical preparations, often flavored',
-        icon: '🧴',
-        color: 'purple',
-        medicineCount: 2,
-        image: 'https://via.placeholder.com/300x200?text=Syrups'
-    },
-    {
-        id: 3,
-        name: 'Capsules',
-        slug: 'capsule',
-        description: 'Encapsulated medications for easy swallowing',
-        icon: '💊',
-        color: 'green',
-        medicineCount: 2,
-        image: 'https://via.placeholder.com/300x200?text=Capsules'
-    },
-    {
-        id: 4,
-        name: 'Injections',
-        slug: 'injection',
-        description: 'Injectable pharmaceutical preparations',
-        icon: '💉',
-        color: 'red',
-        medicineCount: 2,
-        image: 'https://via.placeholder.com/300x200?text=Injections'
-    },
-    {
-        id: 5,
-        name: 'Others',
-        slug: 'others',
-        description: 'Various other pharmaceutical forms',
-        icon: '🏥',
-        color: 'gray',
-        medicineCount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Others'
-    }
-];
+import axiosInstance from '../../../api/axiosInstance';
+import toast from 'react-hot-toast';
 
 const CategoryList = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setCategories(mockCategories);
-            setLoading(false);
-        }, 1000);
+        const fetchCategories = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get('/categories');
+                setCategories(response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                toast.error('Failed to fetch categories');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchCategories();
     }, []);
 
     const getColorClasses = (color) => {

@@ -6,189 +6,14 @@ import SearchFilter from '../../Shop/components/SearchFilter/SearchFilter';
 import MedicineTable from '../../Shop/components/MedicineTable/MedicineTable';
 import Pagination from '../../Shop/components/Pagination/Pagination';
 import MedicineDetailModal from '../../Shop/components/MedicineModal/MedicineDetailModal';
-
-// Mock data for medicines - In real app, this would come from API
-const mockMedicines = [
-    {
-        id: 1,
-        name: 'Paracetamol',
-        genericName: 'Acetaminophen',
-        company: 'Square Pharmaceuticals',
-        category: 'tablet',
-        description: 'Pain reliever and fever reducer',
-        massUnit: '500mg',
-        pricePerUnit: 2.50,
-        discount: 10,
-        image: 'https://via.placeholder.com/300x200?text=Paracetamol',
-        inStock: true,
-        stockQuantity: 500
-    },
-    {
-        id: 2,
-        name: 'Amoxicillin Syrup',
-        genericName: 'Amoxicillin',
-        company: 'Beximco Pharmaceuticals',
-        category: 'syrup',
-        description: 'Antibiotic for bacterial infections',
-        massUnit: '250mg/5ml',
-        pricePerUnit: 15.75,
-        discount: 5,
-        image: 'https://via.placeholder.com/300x200?text=Amoxicillin',
-        inStock: true,
-        stockQuantity: 120
-    },
-    {
-        id: 3,
-        name: 'Vitamin D3 Capsules',
-        genericName: 'Cholecalciferol',
-        company: 'Incepta Pharmaceuticals',
-        category: 'capsule',
-        description: 'Vitamin D3 supplement for bone health',
-        massUnit: '1000 IU',
-        pricePerUnit: 8.50,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Vitamin+D3',
-        inStock: true,
-        stockQuantity: 200
-    },
-    {
-        id: 4,
-        name: 'Insulin Injection',
-        genericName: 'Human Insulin',
-        company: 'Novo Nordisk',
-        category: 'injection',
-        description: 'Fast-acting insulin for diabetes management',
-        massUnit: '100 units/ml',
-        pricePerUnit: 45.00,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Insulin',
-        inStock: true,
-        stockQuantity: 50
-    },
-    {
-        id: 5,
-        name: 'Omeprazole',
-        genericName: 'Omeprazole',
-        company: 'ACI Limited',
-        category: 'tablet',
-        description: 'Proton pump inhibitor for acid reflux',
-        massUnit: '20mg',
-        pricePerUnit: 3.25,
-        discount: 15,
-        image: 'https://via.placeholder.com/300x200?text=Omeprazole',
-        inStock: true,
-        stockQuantity: 300
-    },
-    {
-        id: 6,
-        name: 'Cough Syrup',
-        genericName: 'Dextromethorphan',
-        company: 'Popular Pharmaceuticals',
-        category: 'syrup',
-        description: 'Cough suppressant and expectorant',
-        massUnit: '15mg/5ml',
-        pricePerUnit: 12.00,
-        discount: 8,
-        image: 'https://via.placeholder.com/300x200?text=Cough+Syrup',
-        inStock: true,
-        stockQuantity: 80
-    },
-    {
-        id: 7,
-        name: 'Aspirin',
-        genericName: 'Acetylsalicylic Acid',
-        company: 'Bayer',
-        category: 'tablet',
-        description: 'Anti-inflammatory and pain reliever',
-        massUnit: '75mg',
-        pricePerUnit: 1.80,
-        discount: 5,
-        image: 'https://via.placeholder.com/300x200?text=Aspirin',
-        inStock: true,
-        stockQuantity: 400
-    },
-    {
-        id: 8,
-        name: 'Iron Capsules',
-        genericName: 'Ferrous Sulfate',
-        company: 'Renata Pharmaceuticals',
-        category: 'capsule',
-        description: 'Iron supplement for anemia',
-        massUnit: '325mg',
-        pricePerUnit: 6.25,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Iron+Capsules',
-        inStock: true,
-        stockQuantity: 150
-    },
-    {
-        id: 9,
-        name: 'Antibiotic Injection',
-        genericName: 'Ceftriaxone',
-        company: 'Healthcare Pharmaceuticals',
-        category: 'injection',
-        description: 'Broad-spectrum antibiotic injection',
-        massUnit: '1g',
-        pricePerUnit: 25.00,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Antibiotic+Injection',
-        inStock: true,
-        stockQuantity: 75
-    },
-    {
-        id: 10,
-        name: 'Multivitamin Syrup',
-        genericName: 'Multivitamin Complex',
-        company: 'Drug International',
-        category: 'syrup',
-        description: 'Complete vitamin and mineral supplement',
-        massUnit: '200ml',
-        pricePerUnit: 18.50,
-        discount: 12,
-        image: 'https://via.placeholder.com/300x200?text=Multivitamin+Syrup',
-        inStock: true,
-        stockQuantity: 90
-    }
-];
-
-// Category information mapping
-const categoryInfo = {
-    tablet: {
-        name: 'Tablets',
-        description: 'Solid dosage forms containing active pharmaceutical ingredients',
-        icon: '💊',
-        color: 'blue'
-    },
-    syrup: {
-        name: 'Syrups',
-        description: 'Liquid pharmaceutical preparations, often flavored',
-        icon: '🧴',
-        color: 'purple'
-    },
-    capsule: {
-        name: 'Capsules',
-        description: 'Encapsulated medications for easy swallowing',
-        icon: '💊',
-        color: 'green'
-    },
-    injection: {
-        name: 'Injections',
-        description: 'Injectable pharmaceutical preparations',
-        icon: '💉',
-        color: 'red'
-    },
-    others: {
-        name: 'Others',
-        description: 'Various other pharmaceutical forms',
-        icon: '🏥',
-        color: 'gray'
-    }
-};
+import axiosInstance from '../../../api/axiosInstance';
+import Loading from '../../../components/ui/Loading/Loading';
 
 const CategoryDetails = () => {
     const { category } = useParams();
     const navigate = useNavigate();
     const [medicines, setMedicines] = useState([]);
+    const [categoryInfo, setCategoryInfo] = useState([]);
     const [filteredMedicines, setFilteredMedicines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMedicine, setSelectedMedicine] = useState(null);
@@ -203,16 +28,35 @@ const CategoryDetails = () => {
     const currentCategory = categoryInfo[category] || categoryInfo.others;
 
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            // Filter medicines by category
-            const categoryMedicines = mockMedicines.filter(medicine =>
-                medicine.category.toLowerCase() === category?.toLowerCase()
-            );
-            setMedicines(categoryMedicines);
-            setFilteredMedicines(categoryMedicines);
-            setLoading(false);
-        }, 1000);
+        const fetchMedicines = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get(`/medicines/category/${category}`);
+                setMedicines(response.data);
+            } catch (error) {
+                console.error('Error fetching medicines:', error);
+                toast.error('Failed to fetch medicines');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // fetch categories
+        const fetchCategories = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get(`/categories/${category}`);
+                setCategoryInfo(response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                toast.error('Failed to fetch categories');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories()
+        fetchMedicines();
     }, [category]);
 
     // Filter and search functionality
@@ -290,11 +134,7 @@ const CategoryDetails = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     if (filteredMedicines.length === 0 && !searchTerm) {
@@ -302,9 +142,9 @@ const CategoryDetails = () => {
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <div className="text-6xl mb-4">{currentCategory.icon}</div>
+                        <div className="text-6xl mb-4">{currentCategory?.icon}</div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                            No {currentCategory.name} Available
+                            No {currentCategory?.name} Available
                         </h1>
                         <p className="text-gray-600 dark:text-gray-400 mb-8">
                             No medicines found in the {category} category.
@@ -337,13 +177,13 @@ const CategoryDetails = () => {
                                 Back to Categories
                             </button>
                             <div className="flex items-center space-x-2">
-                                <span className="text-3xl">{currentCategory.icon}</span>
+                                <span className="text-3xl">{currentCategory?.icon}</span>
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                        {currentCategory.name}
+                                        {currentCategory?.name}
                                     </h1>
                                     <p className="text-gray-600 dark:text-gray-400">
-                                        {currentCategory.description}
+                                        {currentCategory?.description}
                                     </p>
                                 </div>
                             </div>
