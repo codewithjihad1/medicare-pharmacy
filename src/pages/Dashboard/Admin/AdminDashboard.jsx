@@ -9,7 +9,6 @@ import {
     FaBars,
     FaTimes
 } from 'react-icons/fa';
-import { NavLink } from 'react-router';
 
 // Import all admin components
 import AdminHome from './components/AdminHome/AdminHome';
@@ -18,7 +17,6 @@ import ManageCategory from './components/ManageCategory/ManageCategory';
 import PaymentManagement from './components/PaymentManagement/PaymentManagement';
 import SalesReport from './components/SalesReport/SalesReport';
 import ManageBanner from './components/ManageBanner/ManageBanner';
-import { Outlet } from 'react-router';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('home');

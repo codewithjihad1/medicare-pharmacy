@@ -16,6 +16,8 @@ import UserDashboard from "../pages/Dashboard/User/UserDashboard";
 import SellerDashboard from "../pages/Dashboard/Seller/SellerDashboard";
 import AdminProtectedRoute from "../components/common/ProtectedRoute/AdminProtectedRoute";
 import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
+import SellerProtectedRoute from "../components/common/ProtectedRoute/SellerProtectedRoute";
+import AuthRouteProtect from "../components/common/AuthRouteProtect/AuthRouteProtect";
 
 const router = createBrowserRouter([
     {
@@ -58,45 +60,42 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "signup",
-                Component: Signup,
+                element: <AuthRouteProtect><Signup /></AuthRouteProtect>
             },
             {
                 path: "login",
-                Component: Login,
+                element: <AuthRouteProtect><Login /></AuthRouteProtect>
             },
             {
                 path: "forgot-password",
-                Component: ForgotPassword,
+                element: <AuthRouteProtect><ForgotPassword /></AuthRouteProtect>
             },
         ],
     },
     {
-        path: "dashboard",
+        path: "/dashboard",
         element: (
             <ProtectedRoute>
                 <UserDashboard />
             </ProtectedRoute>
         ),
-        children: [
-            {
-                path: "seller",
-                element: (
-                    <ProtectedRoute>
-                        <SellerDashboard />
-                    </ProtectedRoute>
-                ),
-            },
-            {
-                path: "admin",
-                element: (
-                    <AdminProtectedRoute>
-                        <AdminDashboard />
-                    </AdminProtectedRoute>
-                ),
-            },
-        ]
     },
-
+    {
+        path: "/dashboard/seller",
+        element: (
+            <SellerProtectedRoute>
+                <SellerDashboard />
+            </SellerProtectedRoute>
+        ),
+    },
+    {
+        path: "/dashboard/admin",
+        element: (
+            <AdminProtectedRoute>
+                <AdminDashboard />
+            </AdminProtectedRoute>
+        ),
+    },
 ]);
 
 
