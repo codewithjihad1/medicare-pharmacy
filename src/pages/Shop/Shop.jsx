@@ -5,94 +5,7 @@ import MedicineTable from './components/MedicineTable/MedicineTable';
 import Pagination from './components/Pagination/Pagination';
 import MedicineDetailModal from './components/MedicineModal/MedicineDetailModal';
 import Loading from '../../components/ui/Loading/Loading';
-
-// Mock data for medicines - In real app, this would come from API
-const mockMedicines = [
-    {
-        id: 1,
-        name: 'Paracetamol',
-        genericName: 'Acetaminophen',
-        company: 'Square Pharmaceuticals',
-        category: 'tablet',
-        description: 'Pain reliever and fever reducer',
-        massUnit: '500mg',
-        pricePerUnit: 2.50,
-        discount: 10,
-        image: 'https://via.placeholder.com/300x200?text=Paracetamol',
-        inStock: true,
-        stockQuantity: 500
-    },
-    {
-        id: 2,
-        name: 'Amoxicillin Syrup',
-        genericName: 'Amoxicillin',
-        company: 'Beximco Pharmaceuticals',
-        category: 'syrup',
-        description: 'Antibiotic for bacterial infections',
-        massUnit: '250mg/5ml',
-        pricePerUnit: 15.75,
-        discount: 5,
-        image: 'https://via.placeholder.com/300x200?text=Amoxicillin',
-        inStock: true,
-        stockQuantity: 120
-    },
-    {
-        id: 3,
-        name: 'Vitamin D3 Capsules',
-        genericName: 'Cholecalciferol',
-        company: 'Incepta Pharmaceuticals',
-        category: 'capsule',
-        description: 'Vitamin D3 supplement for bone health',
-        massUnit: '1000 IU',
-        pricePerUnit: 8.50,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Vitamin+D3',
-        inStock: true,
-        stockQuantity: 200
-    },
-    {
-        id: 4,
-        name: 'Insulin Injection',
-        genericName: 'Human Insulin',
-        company: 'Novo Nordisk',
-        category: 'injection',
-        description: 'Fast-acting insulin for diabetes management',
-        massUnit: '100 units/ml',
-        pricePerUnit: 45.00,
-        discount: 0,
-        image: 'https://via.placeholder.com/300x200?text=Insulin',
-        inStock: true,
-        stockQuantity: 50
-    },
-    {
-        id: 5,
-        name: 'Omeprazole',
-        genericName: 'Omeprazole',
-        company: 'ACI Limited',
-        category: 'tablet',
-        description: 'Proton pump inhibitor for acid reflux',
-        massUnit: '20mg',
-        pricePerUnit: 3.25,
-        discount: 15,
-        image: 'https://via.placeholder.com/300x200?text=Omeprazole',
-        inStock: true,
-        stockQuantity: 300
-    },
-    {
-        id: 6,
-        name: 'Cough Syrup',
-        genericName: 'Dextromethorphan',
-        company: 'Popular Pharmaceuticals',
-        category: 'syrup',
-        description: 'Cough suppressant and expectorant',
-        massUnit: '15mg/5ml',
-        pricePerUnit: 12.00,
-        discount: 8,
-        image: 'https://via.placeholder.com/300x200?text=Cough+Syrup',
-        inStock: true,
-        stockQuantity: 80
-    }
-];
+import axiosInstance from '../../api/axiosInstance';
 
 const Shop = () => {
     const [medicines, setMedicines] = useState([]);
@@ -108,12 +21,19 @@ const Shop = () => {
     const [itemsPerPage] = useState(10);
 
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setMedicines(mockMedicines);
-            setFilteredMedicines(mockMedicines);
-            setLoading(false);
-        }, 1000);
+        const fetchMedicines = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get('/medicines');
+                setMedicines(response.data);
+                setFilteredMedicines(response.data);
+            } catch (error) {
+                toast.error('Failed to fetch medicines');
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchMedicines();
     }, []);
 
     // Filter and search functionality
