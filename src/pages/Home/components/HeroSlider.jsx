@@ -10,58 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import BannerLoading from '../../../components/ui/Loading/BannerLoading';
-
-// Mock data for development - Replace with actual API call
-const mockBannerAds = [
-    {
-        _id: '1',
-        medicineImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1000',
-        medicineName: 'Aspirin Plus',
-        description: 'Fast-acting pain relief medication for headaches and fever. Trusted by doctors worldwide.',
-        sellerEmail: 'seller1@example.com',
-        price: 15.99,
-        discount: 20,
-        company: 'PharmaCorp',
-        category: 'Tablet',
-        isActive: true
-    },
-    {
-        _id: '2',
-        medicineImage: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?q=80&w=1000',
-        medicineName: 'Vitamin D3',
-        description: 'Essential vitamin supplement for bone health and immune system support.',
-        sellerEmail: 'seller2@example.com',
-        price: 24.50,
-        discount: 15,
-        company: 'HealthMax',
-        category: 'Capsule',
-        isActive: true
-    },
-    {
-        _id: '3',
-        medicineImage: 'https://images.unsplash.com/photo-1671493229066-f36e86b35841?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        medicineName: 'Cough Syrup',
-        description: 'Natural honey-based cough syrup for dry and wet cough relief.',
-        sellerEmail: 'seller3@example.com',
-        price: 12.75,
-        discount: 10,
-        company: 'NaturalCure',
-        category: 'Syrup',
-        isActive: true
-    },
-    {
-        _id: '4',
-        medicineImage: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=1000',
-        medicineName: 'Antibiotic Injection',
-        description: 'Broad-spectrum antibiotic injection for serious bacterial infections.',
-        sellerEmail: 'seller4@example.com',
-        price: 45.00,
-        discount: 25,
-        company: 'MediTech',
-        category: 'Injection',
-        isActive: true
-    }
-];
+import axiosInstance from '../../../api/axiosInstance';
 
 const HeroSlider = () => {
     const [bannerAds, setBannerAds] = useState([]);
@@ -69,19 +18,12 @@ const HeroSlider = () => {
     const { theme } = useTheme();
 
     useEffect(() => {
-        // Simulate API call to fetch banner advertisements
         const fetchBannerAds = async () => {
             try {
                 setLoading(true);
-                // TODO: Replace with actual API call
-                // const response = await fetch('/api/banner-ads/active');
-                // const data = await response.json();
-
-                // For now, using mock data
-                setTimeout(() => {
-                    setBannerAds(mockBannerAds);
-                    setLoading(false);
-                }, 1000);
+                const response = await axiosInstance.get('/medicines/banner');
+                setBannerAds(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching banner ads:', error);
                 setLoading(false);
@@ -163,7 +105,7 @@ const HeroSlider = () => {
                             <div
                                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                                 style={{
-                                    backgroundImage: `url(${ad.medicineImage})`,
+                                    backgroundImage: `url(${ad.image})`,
                                 }}
                             >
                                 {/* Dynamic overlay based on theme */}
@@ -189,7 +131,7 @@ const HeroSlider = () => {
                                                     {ad.category} • {ad.company}
                                                 </p>
                                                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight text-white">
-                                                    {ad.medicineName}
+                                                    {ad.name}
                                                 </h1>
                                             </div>
 
@@ -209,7 +151,7 @@ const HeroSlider = () => {
                                                             ? 'text-3xl font-bold text-green-300'
                                                             : 'text-3xl font-bold text-green-400'
                                                     }>
-                                                        ${calculateDiscountedPrice(ad.price, ad.discount)}
+                                                        ${calculateDiscountedPrice(ad.pricePerUnit, ad.discount)}
                                                     </span>
                                                     {ad.discount > 0 && (
                                                         <>
@@ -269,7 +211,7 @@ const HeroSlider = () => {
                                                         ? 'text-sm text-gray-200'
                                                         : 'text-sm text-gray-300'
                                                 }>
-                                                    Sold by: <span className="text-white font-medium">{ad.sellerEmail}</span>
+                                                    Sold by: <span className="text-white font-medium">{ad.company}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -283,8 +225,8 @@ const HeroSlider = () => {
                                                         : 'rounded-2xl p-8 bg-white/10 backdrop-blur-sm'
                                                 }>
                                                     <img
-                                                        src={ad.medicineImage}
-                                                        alt={ad.medicineName}
+                                                        src={ad.image}
+                                                        alt={ad.name}
                                                         className="w-full h-80 object-cover rounded-xl shadow-2xl"
                                                     />
                                                     {ad.discount > 0 && (

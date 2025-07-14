@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { FaTablets, FaFlask, FaCapsules, FaSyringe, FaPrescriptionBottleAlt, FaArrowRight } from 'react-icons/fa';
 import useTheme from '../../../../hooks/useTheme';
 import CategoryCard from './CategoryCard';
+import axiosInstance from '../../../../api/axiosInstance';
 
 // Mock data for development - Replace with actual API call
 const mockCategories = [
@@ -73,15 +74,9 @@ const CategoryCards = () => {
         const fetchCategories = async () => {
             try {
                 setLoading(true);
-                // TODO: Replace with actual API call
-                // const response = await fetch('/api/categories');
-                // const data = await response.json();
-
-                // For now, using mock data
-                setTimeout(() => {
-                    setCategories(mockCategories);
-                    setLoading(false);
-                }, 800);
+                const response = await axiosInstance.get('/categories');
+                setCategories(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching categories:', error);
                 setLoading(false);
@@ -189,7 +184,7 @@ const CategoryCards = () => {
 
                 {/* Category Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                         <CategoryCard key={category._id} category={category} handleCategoryClick={handleCategoryClick} getColorClasses={getColorClasses} />))}
                 </div>
 
