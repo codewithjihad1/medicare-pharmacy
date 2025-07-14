@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaEdit, FaTrash, FaUserShield, FaStore, FaUser } from 'react-icons/fa';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const UserTable = ({ users, onRoleChange, onDeleteUser, loading }) => {
     const getRoleIcon = (role) => {
@@ -25,11 +26,7 @@ const UserTable = ({ users, onRoleChange, onDeleteUser, loading }) => {
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (
@@ -60,16 +57,13 @@ const UserTable = ({ users, onRoleChange, onDeleteUser, loading }) => {
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
                                     <img
-                                        src={user.photo || 'https://via.placeholder.com/40x40?text=User'}
+                                        src={user.photoURL}
                                         alt={user.name}
                                         className="h-10 w-10 rounded-full object-cover"
                                     />
                                     <div className="ml-4">
                                         <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                            {user.name}
-                                        </div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            {user.username}
+                                            {user.displayName}
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +88,7 @@ const UserTable = ({ users, onRoleChange, onDeleteUser, loading }) => {
                                 <div className="flex space-x-2">
                                     {/* Role Change Dropdown */}
                                     <select
-                                        value={user.role}
+                                        defaultValue={user.role}
                                         onChange={(e) => onRoleChange(user.id, e.target.value)}
                                         className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                     >

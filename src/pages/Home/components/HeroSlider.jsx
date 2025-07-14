@@ -9,6 +9,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
+import BannerLoading from '../../../components/ui/Loading/BannerLoading';
 
 // Mock data for development - Replace with actual API call
 const mockBannerAds = [
@@ -105,21 +106,7 @@ const HeroSlider = () => {
     };
 
     if (loading) {
-        return (
-            <div className={
-                theme === 'dark'
-                    ? 'h-96 bg-gray-900 animate-pulse flex items-center justify-center'
-                    : 'h-96 bg-gray-100 animate-pulse flex items-center justify-center'
-            }>
-                <div className={
-                    theme === 'dark'
-                        ? 'text-gray-400'
-                        : 'text-gray-600'
-                }>
-                    Loading banner ads...
-                </div>
-            </div>
-        );
+        return <BannerLoading />;
     }
 
     if (!bannerAds.length) {

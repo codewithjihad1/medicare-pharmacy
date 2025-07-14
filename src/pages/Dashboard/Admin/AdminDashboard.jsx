@@ -36,6 +36,11 @@ const AdminDashboard = () => {
 
     const ActiveComponent = navItems.find(item => item.id === activeTab)?.component || AdminHome;
 
+    // Render content based on active tab
+    const renderContent = () => {
+        return <ActiveComponent />;
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             {/* Mobile menu button */}
@@ -50,7 +55,7 @@ const AdminDashboard = () => {
 
             {/* Sidebar */}
             <div className={`!fixed inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                } lg:translate-x-0 transition duration-200 ease-in-out lg:static lg:inset-0 z-40`}>
+                } lg:translate-x-0 lg:w-64 transition duration-200 ease-in-out lg:static lg:inset-0 z-40`}>
                 <div className="flex h-screen w-64 flex-col bg-white dark:bg-gray-800 shadow-xl">
                     {/* Logo/Header */}
                     <div className="flex h-16 items-center justify-center border-b border-gray-200 dark:border-gray-700">
@@ -73,8 +78,7 @@ const AdminDashboard = () => {
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             return (
-                                <NavLink
-                                    to={`/dashboard/admin/${item.id}`}
+                                <button
                                     key={item.id}
                                     onClick={() => {
                                         setActiveTab(item.id);
@@ -92,7 +96,7 @@ const AdminDashboard = () => {
                                             }`}
                                     />
                                     {item.label}
-                                </NavLink>
+                                </button>
                             );
                         })}
                     </nav>
@@ -157,7 +161,7 @@ const AdminDashboard = () => {
                     {/* Main content area */}
                     <main className="flex-1">
                         <div className="px-4 sm:px-6 lg:px-8 py-8">
-                            <Outlet />
+                            {renderContent()}
                         </div>
                     </main>
                 </div>

@@ -1,14 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
-import { AuthContext } from '../../../context/AuthContext';
 import { FaEye, FaEyeSlash, FaGoogle, FaGithub, FaUpload } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../../hooks/useAuth';
+import { imageUpload } from '../../../utils/imageUpload';
+import Loading from '../../../components/ui/Loading/Loading';
+import saveUserDataOnDb from '../../../utils/saveUserDb';
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [imagePreview, setImagePreview] = useState('');
-    const { signupWithEmailPassword, loginWithGoogle, loading } = useContext(AuthContext);
+    const [photoURL, setPhotoURL] = useState('');
+    const { signupWithEmailPassword, loginWithGoogle, loading, } = useAuth();
     const navigate = useNavigate();
 
     const {
@@ -19,28 +23,29 @@ const Signup = () => {
     } = useForm();
 
     // Handle image upload
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // Create preview URL
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    const handleImageUpload = async (event) => {
+        const imageFile = event.target.files[0];
+        // Upload image and get URL
+        const photoURL = await imageUpload(imageFile);
+        setImagePreview(photoURL)
+        setPhotoURL(photoURL);
+    }
 
     // Handle form submission
     const onSubmit = async (data) => {
+        const { username, email, password, role } = data;
+
         try {
-            // For now, we'll use the image preview as photoURL
-            // In a real app, you'd upload to a service like Cloudinary
-            const photoURL = imagePreview || 'https://via.placeholder.com/150';
+            await signupWithEmailPassword(email, password, username, photoURL);
 
-            await signupWithEmailPassword(data.email, data.password, data.username, photoURL);
+            // save user data to backend
+            saveUserDataOnDb({
+                email,
+                displayName: username,
+                role,
+                photoURL,
+            });
 
-            // Here you would typically send the user data including role to your backend
             // For now, we'll just show success message
             toast.success('Account created successfully!');
             navigate('/');
@@ -53,13 +58,26 @@ const Signup = () => {
     // Handle Google login
     const handleGoogleLogin = async () => {
         try {
-            await loginWithGoogle();
+            const { user } = await loginWithGoogle();
+
+            // save user data to backend
+            saveUserDataOnDb({
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL
+            })
+
             toast.success('Logged in successfully!');
             navigate('/');
         } catch (error) {
             toast.error(error.message || 'Google login failed!');
         }
     };
+
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
@@ -132,8 +150,8 @@ const Signup = () => {
                                         id="photo"
                                         type="file"
                                         accept="image/*"
-                                        onChange={handleImageUpload}
                                         className="hidden"
+                                        onChange={handleImageUpload}
                                     />
                                     <label
                                         htmlFor="photo"
@@ -206,7 +224,7 @@ const Signup = () => {
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option value="">Choose your role</option>
-                                <option value="user">User (Customer)</option>
+                                <option value="customer">User (Customer)</option>
                                 <option value="seller">Seller (Vendor)</option>
                             </select>
                             {errors.role && (

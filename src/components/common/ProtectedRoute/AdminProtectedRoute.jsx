@@ -1,23 +1,36 @@
-import React, { useContext } from 'react';
 import { Navigate } from 'react-router';
-import { AuthContext } from '../../../context/AuthContext';
+import Loading from '../../ui/Loading/Loading';
+import { useAuth } from '../../../hooks/useAuth';
+import { useEffect, useState } from 'react';
+import axiosInstance from '../../../api/axiosInstance';
 
 const AdminProtectedRoute = ({ children }) => {
-    const { user, loading } = useContext(AuthContext);
+    const { user, loading } = useAuth()
+    const [userRole, setUserRole] = useState('');
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+    useEffect(() => {
+        const fetchUserFromDb = async () => {
+            if (user) {
+                try {
+                    const response = await axiosInstance.get(`/users/${user.email}`);
+                    setUserRole(response.data.role);
+                } catch (error) {
+                    console.error("Error fetching user role:", error);
+                }
+            }
+        }
+        fetchUserFromDb();
+    }, [user]);
+
+    if (loading || !userRole) {
+        return <Loading />;
     }
 
     if (!user) {
         return <Navigate to="/auth/login" replace />;
     }
 
-    if (user.role== 'admin') {
+    if (userRole !== 'admin') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="max-w-md mx-auto text-center">

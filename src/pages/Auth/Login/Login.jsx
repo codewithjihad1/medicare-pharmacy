@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../../../context/AuthContext';
 import { FaEye, FaEyeSlash, FaGoogle, FaGithub } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import saveUserDataOnDb from '../../../utils/saveUserDb';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -32,8 +33,16 @@ const Login = () => {
     // Handle Google login
     const handleGoogleLogin = async () => {
         try {
-            await loginWithGoogle();
-            toast.success('Logged in with Google successfully!');
+            const { user } = await loginWithGoogle();
+
+            // save user data to backend
+            saveUserDataOnDb({
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+            })
+
+            toast.success('Logged in successfully!');
             navigate('/');
         } catch (error) {
             toast.error(error.message || 'Google login failed!');
@@ -43,7 +52,14 @@ const Login = () => {
     // Handle GitHub login
     const handleGitHubLogin = async () => {
         try {
-            await loginWithGitHub();
+            const { user } = await loginWithGitHub();
+
+            // save user data to backend
+            saveUserDataOnDb({
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+            })
             toast.success('Logged in with GitHub successfully!');
             navigate('/');
         } catch (error) {

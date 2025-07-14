@@ -1,9 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { FaUser, FaShoppingCart, FaHeart, FaCog } from 'react-icons/fa';
+import axiosInstance from '../../../api/axiosInstance';
+import Loading from '../../../components/ui/Loading/Loading';
+import { Navigate } from 'react-router';
 
 const UserDashboard = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
+    const [userRole, setUserRole] = useState('');
+
+
+    useEffect(() => {
+        const fetchUserFromDb = async () => {
+            if (user) {
+                try {
+                    const response = await axiosInstance.get(`/users/${user.email}`);
+                    setUserRole(response.data.role);
+                } catch (error) {
+                    console.error("Error fetching user role:", error);
+                }
+            }
+        }
+        fetchUserFromDb();
+    }, [user]);
+
+    if (loading || !userRole) {
+        return <Loading />;
+    }
+
+    if (userRole === 'admin') {
+        return <Navigate to="/dashboard/admin" />;
+    }
+
+    if (userRole === 'seller') {
+        return <Navigate to="/dashboard/seller" />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8">

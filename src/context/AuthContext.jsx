@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
-import Loading from '../components/ui/Loading/Loading';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../services/firebase/firebaseConfig';
+import Loading from '../components/ui/Loading/Loading';
 
 const AuthContext = createContext({});
 
@@ -9,8 +9,7 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('')
-    const googleProvider = new GoogleAuthProvider();
-    const githubProvider = new GithubAuthProvider();
+    const provider = new GoogleAuthProvider();
 
     // logout
     const logout = () => {
@@ -51,17 +50,7 @@ const AuthProvider = ({ children }) => {
     // login with google
     const loginWithGoogle = () => {
         setLoading(true)
-        return signInWithPopup(auth, googleProvider)
-            .catch(error => {
-                setLoading(false)
-                setErrorMessage(error.message)
-            })
-    }
-
-    // login with github
-    const loginWithGitHub = () => {
-        setLoading(true)
-        return signInWithPopup(auth, githubProvider)
+        return signInWithPopup(auth, provider)
             .catch(error => {
                 setLoading(false)
                 setErrorMessage(error.message)
@@ -115,7 +104,6 @@ const AuthProvider = ({ children }) => {
         loginWithEmailPassword,
         signupWithEmailPassword,
         loginWithGoogle,
-        loginWithGitHub,
         profileUpdate,
         resetPasswordWithEmail
     }

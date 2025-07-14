@@ -2,55 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaUsers, FaSearch, FaFilter } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import UserTable from './UserTable';
+import useAxiosSecure from '../../../../../hooks/useAxiosSecure';
 
-// Mock users data
-const mockUsers = [
-    {
-        id: 1,
-        name: 'John Doe',
-        username: 'johndoe',
-        email: 'john@example.com',
-        role: 'user',
-        photo: 'https://via.placeholder.com/40x40?text=JD',
-        createdAt: '2024-01-15T10:30:00Z'
-    },
-    {
-        id: 2,
-        name: 'Jane Smith',
-        username: 'janesmith',
-        email: 'jane@example.com',
-        role: 'seller',
-        photo: 'https://via.placeholder.com/40x40?text=JS',
-        createdAt: '2024-02-20T14:45:00Z'
-    },
-    {
-        id: 3,
-        name: 'Mike Wilson',
-        username: 'mikewilson',
-        email: 'mike@example.com',
-        role: 'admin',
-        photo: 'https://via.placeholder.com/40x40?text=MW',
-        createdAt: '2024-01-10T09:15:00Z'
-    },
-    {
-        id: 4,
-        name: 'Sarah Johnson',
-        username: 'sarahjohnson',
-        email: 'sarah@example.com',
-        role: 'seller',
-        photo: 'https://via.placeholder.com/40x40?text=SJ',
-        createdAt: '2024-03-05T16:20:00Z'
-    },
-    {
-        id: 5,
-        name: 'David Brown',
-        username: 'davidbrown',
-        email: 'david@example.com',
-        role: 'user',
-        photo: 'https://via.placeholder.com/40x40?text=DB',
-        createdAt: '2024-02-28T11:30:00Z'
-    }
-];
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -59,14 +12,25 @@ const ManageUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('all');
 
+    const axiosSecure = useAxiosSecure();
+
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setUsers(mockUsers);
-            setFilteredUsers(mockUsers);
-            setLoading(false);
-        }, 1000);
-    }, []);
+        const fetchUsers = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosSecure.get('/users');
+                setUsers(response.data);
+                setFilteredUsers(response.data);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                console.error('Error fetching users:', error);
+            }
+
+        };
+
+        fetchUsers();
+    }, [axiosSecure]);
 
     // Filter users based on search term and role filter
     useEffect(() => {

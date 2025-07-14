@@ -4,6 +4,7 @@ import SearchFilter from './components/SearchFilter/SearchFilter';
 import MedicineTable from './components/MedicineTable/MedicineTable';
 import Pagination from './components/Pagination/Pagination';
 import MedicineDetailModal from './components/MedicineModal/MedicineDetailModal';
+import Loading from '../../components/ui/Loading/Loading';
 
 // Mock data for medicines - In real app, this would come from API
 const mockMedicines = [
@@ -190,11 +191,7 @@ const Shop = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (
