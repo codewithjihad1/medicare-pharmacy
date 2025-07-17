@@ -1,39 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaUserMd, FaCalendarAlt, FaArrowRight } from 'react-icons/fa';
+import axiosInstance from '../../../../api/axiosInstance';
 
 const HealthBlog = () => {
-    const blogPosts = [
-        {
-            id: 1,
-            title: "Understanding Generic vs Brand Medicines: What You Need to Know",
-            excerpt: "Learn the differences between generic and brand medicines, their effectiveness, and how to make informed decisions for your health.",
-            author: "Dr. Sarah Ahmed",
-            date: "2025-07-05",
-            image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=240&fit=crop",
-            category: "Medicine Guide",
-            readTime: "5 min read"
-        },
-        {
-            id: 2,
-            title: "Essential First Aid Medicines Every Home Should Have",
-            excerpt: "Discover the must-have medicines for your home first aid kit and how to use them safely in emergency situations.",
-            author: "Dr. Michael Rahman",
-            date: "2025-07-03",
-            image: "https://images.unsplash.com/photo-1603398938361-99af5c5c3b44?w=400&h=240&fit=crop",
-            category: "Health Tips",
-            readTime: "7 min read"
-        },
-        {
-            id: 3,
-            title: "How to Store Medicines Properly: A Complete Guide",
-            excerpt: "Proper medicine storage can extend shelf life and maintain effectiveness. Learn the best practices for storing different types of medications.",
-            author: "Pharmacist Lisa Khan",
-            date: "2025-07-01",
-            image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=240&fit=crop",
-            category: "Safety Guide",
-            readTime: "4 min read"
-        }
-    ];
+    const [healthBlogs, setHealthBlogs] = useState([]);
+
+    useEffect(() => {
+        // Fetch health blogs from the server
+        const fetchHealthBlogs = async () => {
+            const response = await axiosInstance.get('/health-blogs');
+            setHealthBlogs(response.data);
+        };
+
+        fetchHealthBlogs();
+    }, []);
+
+
 
     return (
         <section className="health-blog-section py-16 bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-800 dark:to-gray-900 transition-colors duration-300">
@@ -50,7 +32,7 @@ const HealthBlog = () => {
 
                 {/* Blog Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                    {blogPosts.map((post) => (
+                    {healthBlogs.map((post) => (
                         <div key={post.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/30 transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700">
                             <div className="relative overflow-hidden">
                                 <img

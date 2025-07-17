@@ -8,7 +8,7 @@ const CategoryCard = ({ category, handleCategoryClick, getColorClasses }) => {
         <div
             key={category._id}
             onClick={() => handleCategoryClick(category)}
-            className="group cursor-pointer rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-750"
+            className="group cursor-pointer rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
             {/* Category Image */}
             <div className="relative h-48 overflow-hidden">

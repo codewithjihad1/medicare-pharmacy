@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay, FreeMode } from 'swiper/modules'
 
@@ -9,84 +9,30 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/free-mode'
 import ProductCard from './ProductCard'
+import axiosInstance from '../../../../api/axiosInstance'
+import LoadingSectionData from '../../../../components/ui/Loading/LoadingSectionData'
 
 const DiscountProducts = () => {
-  // Sample discount products data
-  const discountProducts = [
-    {
-      id: 1,
-      name: "Premium Multivitamin",
-      originalPrice: 49.99,
-      discountPrice: 34.99,
-      discount: 30,
-      image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
-      rating: 4.5,
-      reviews: 128,
-      brand: "HealthCare Plus",
-      inStock: true
-    },
-    {
-      id: 2,
-      name: "Omega-3 Fish Oil",
-      originalPrice: 29.99,
-      discountPrice: 19.99,
-      discount: 33,
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=300&fit=crop",
-      rating: 4.7,
-      reviews: 89,
-      brand: "Ocean Pure",
-      inStock: true
-    },
-    {
-      id: 3,
-      name: "Vitamin D3 Capsules",
-      originalPrice: 24.99,
-      discountPrice: 16.99,
-      discount: 32,
-      image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=300&h=300&fit=crop",
-      rating: 4.3,
-      reviews: 156,
-      brand: "SunVita",
-      inStock: true
-    },
-    {
-      id: 4,
-      name: "Probiotics Complex",
-      originalPrice: 39.99,
-      discountPrice: 24.99,
-      discount: 38,
-      image: "https://images.unsplash.com/photo-1616671276441-2f2c277b8bf6?w=300&h=300&fit=crop",
-      rating: 4.6,
-      reviews: 203,
-      brand: "BioBalance",
-      inStock: true
-    },
-    {
-      id: 5,
-      name: "Calcium + Magnesium",
-      originalPrice: 34.99,
-      discountPrice: 22.99,
-      discount: 34,
-      image: "https://images.unsplash.com/photo-1550572017-edd951b55104?w=300&h=300&fit=crop",
-      rating: 4.4,
-      reviews: 94,
-      brand: "BoneHealth",
-      inStock: false
-    },
-    {
-      id: 6,
-      name: "Iron Supplement",
-      originalPrice: 19.99,
-      discountPrice: 12.99,
-      discount: 35,
-      image: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=300&h=300&fit=crop",
-      rating: 4.2,
-      reviews: 67,
-      brand: "IronMax",
-      inStock: true
-    }
-  ]
+  const [discountProducts, setDiscountProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // fetch discount products from API or use static data
+  useEffect(() => {
+    setLoading(true);
+    // fetching data from an API
+    const fetchDiscountProducts = async () => {
+      const response = await axiosInstance.get('/discount-products');
+      setDiscountProducts(response.data);
+      setLoading(false);
+    };
+
+    fetchDiscountProducts();
+  }, [])
+
+  // if data is loading
+  if (loading) {
+    return <LoadingSectionData />;
+  }
 
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900">

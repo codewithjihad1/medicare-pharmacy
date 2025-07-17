@@ -230,15 +230,15 @@ const ManageBanner = () => {
                         {medicines.filter(m => m.isInBanner).map(medicine => (
                             <div key={medicine.id} className="relative bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                                 <img
-                                    src={medicine.medicineImage}
-                                    alt={medicine.medicineName}
+                                    src={medicine.image}
+                                    alt={medicine.name}
                                     className="w-full h-24 object-cover rounded-md mb-2"
                                 />
                                 <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    {medicine.medicineName}
+                                    {medicine.name}
                                 </h4>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {medicine.views} views • {medicine.sales} sales
+                                    {medicine.category}
                                 </p>
                                 <button
                                     onClick={() => handleToggleBanner(medicine._id)}

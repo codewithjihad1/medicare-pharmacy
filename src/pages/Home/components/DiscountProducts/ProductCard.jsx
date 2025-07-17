@@ -1,7 +1,9 @@
 import { FaStar, FaStarHalfAlt } from "react-icons/fa"
 import { FiShoppingCart, FiHeart, FiEye } from 'react-icons/fi'
+import { useNavigate } from "react-router";
 
 const ProductCard = ({ product }) => {
+    const navigate = useNavigate();
 
     const renderStars = (rating) => {
         const stars = []
@@ -41,7 +43,9 @@ const ProductCard = ({ product }) => {
                         <button className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                             <FiHeart className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                         </button>
-                        <button className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                        <button 
+                        onClick={() => navigate(`/product/${product._id}`)}
+                        className="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                             <FiEye className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                         </button>
                     </div>
@@ -60,7 +64,7 @@ const ProductCard = ({ product }) => {
             {/* Product Info */}
             <div className="p-4">
                 {/* Brand */}
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{product.brand}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{product.company}</p>
 
                 {/* Product Name */}
                 <h3 className="font-semibold text-gray-800 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -83,7 +87,7 @@ const ProductCard = ({ product }) => {
                         ${product.discountPrice}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                        ${product.originalPrice}
+                        ${product.pricePerUnit}
                     </span>
                 </div>
 
