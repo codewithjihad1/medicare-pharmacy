@@ -3,6 +3,8 @@ import { FaPlus, FaSearch, FaFilter, FaPills } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import MedicineTable from './MedicineTable';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '../../../../../api/axiosInstance';
 import { useAuth } from '../../../../../hooks/useAuth';
 
 // Mock medicines data for seller
@@ -108,14 +110,22 @@ const ManageMedicines = () => {
         setValue
     } = useForm();
 
+    const { data: medicinesData, isLoading: isMedicinesLoading } = useQuery({
+        queryKey: ['medicines'],
+        enabled: !!user?.email,
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/medicines/${user?.email}`)
+            return response.data;
+        }
+    });
+
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setMedicines(mockMedicines);
-            setFilteredMedicines(mockMedicines);
+        if (medicinesData) {
+            setMedicines(medicinesData);
+            setFilteredMedicines(medicinesData);
             setLoading(false);
-        }, 1000);
-    }, []);
+        }
+    }, [medicinesData]);
 
     // Filter medicines based on search term, category, and status
     useEffect(() => {
@@ -372,7 +382,7 @@ const ManageMedicines = () => {
                     onEditMedicine={handleEditMedicine}
                     onDeleteMedicine={handleDeleteMedicine}
                     onViewMedicine={handleViewMedicine}
-                    loading={loading}
+                    loading={isMedicinesLoading}
                 />
             </div>
 

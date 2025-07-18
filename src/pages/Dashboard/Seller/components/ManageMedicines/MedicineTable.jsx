@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaEdit, FaTrash, FaEye, FaPills } from 'react-icons/fa';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedicine, loading }) => {
     const getStatusColor = (status) => {
@@ -16,11 +17,7 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (
@@ -52,8 +49,8 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                    {medicines.map((medicine) => (
-                        <tr key={medicine.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    {medicines?.map((medicine) => (
+                        <tr key={medicine._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
                                     <img
@@ -86,7 +83,7 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-bold text-gray-900 dark:text-white">
-                                    ${medicine.price.toFixed(2)}
+                                    ${medicine.pricePerUnit.toFixed(2)}
                                 </div>
                                 {medicine.discount > 0 && (
                                     <div className="text-xs text-red-500">
@@ -96,17 +93,17 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900 dark:text-white">
-                                    {medicine.stock} units
+                                    {medicine.stockQuantity} units
                                 </div>
-                                {medicine.stock < 10 && (
+                                {medicine.stockQuantity < 10 && (
                                     <div className="text-xs text-red-500">
                                         Low stock!
                                     </div>
                                 )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(medicine.status)}`}>
-                                    {medicine.status.charAt(0).toUpperCase() + medicine.status.slice(1)}
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(medicine?.status)}`}>
+                                    {medicine?.status?.charAt(0).toUpperCase() + medicine?.status?.slice(1)}
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -128,7 +125,7 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
                                     </button>
 
                                     <button
-                                        onClick={() => onDeleteMedicine(medicine.id)}
+                                        onClick={() => onDeleteMedicine(medicine._id)}
                                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-100 dark:hover:bg-red-900"
                                         title="Delete medicine"
                                     >
