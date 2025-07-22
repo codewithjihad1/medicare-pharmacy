@@ -134,7 +134,6 @@ const ManageMedicines = () => {
                 // Add new medicine
                 await addMedicineMutation.mutateAsync({
                     ...data,
-                    status: 'pending',
                     stockQuantity: parseInt(data.stockQuantity),
                     pricePerUnit: parseFloat(data.pricePerUnit),
                     discount: parseFloat(data.discount) || 0,
@@ -178,8 +177,9 @@ const ManageMedicines = () => {
         if (window.confirm('Are you sure you want to delete this medicine? This action cannot be undone.')) {
             try {
                 setMedicines(prevMedicines =>
-                    prevMedicines.filter(med => med.id !== medicineId)
+                    prevMedicines.filter(med => med._id !== medicineId)
                 );
+                await axiosInstance.delete(`/medicines/${medicineId}`);
                 toast.success('Medicine deleted successfully');
             } catch (error) {
                 console.error('Error deleting medicine:', error);

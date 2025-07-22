@@ -11,6 +11,7 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
             return response.data;
         }
     });
+    console.log("🚀 ~ AddOrEditMedicine ~ companies:", companies)
 
     if (isCompaniesLoading) {
         return <Loading />;
@@ -118,8 +119,8 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
                             >
                                 <option value="">Select company</option>
                                 {companies?.map(company => (
-                                    <option key={company._id} value={company.name}>
-                                        {company.name}
+                                    <option key={company?._id} value={company?.name}>
+                                        {company?.name}
                                     </option>
                                 ))}
                             </select>

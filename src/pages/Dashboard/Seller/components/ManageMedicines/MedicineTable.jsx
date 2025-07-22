@@ -3,7 +3,6 @@ import { FaEdit, FaTrash, FaEye, FaPills } from 'react-icons/fa';
 import Loading from '../../../../../components/ui/Loading/Loading';
 
 const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedicine, loading }) => {
-    console.log("🚀 ~ MedicineTable ~ medicines:", medicines)
     const getStatusColor = (status) => {
         switch (status) {
             case 'active':

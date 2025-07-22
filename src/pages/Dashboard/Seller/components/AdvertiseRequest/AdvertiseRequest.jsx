@@ -152,11 +152,11 @@ const AdvertiseRequest = () => {
         switch (status) {
             case 'approved':
             case 'active':
-                return <FaCheckCircle className="text-green-500" />;
+                return <FaCheckCircle className="text-green-500 dark:text-green-400" />;
             case 'pending':
-                return <FaClock className="text-yellow-500" />;
+                return <FaClock className="text-yellow-500 dark:text-yellow-400" />;
             case 'rejected':
-                return <FaTimesCircle className="text-red-500" />;
+                return <FaTimesCircle className="text-red-500 dark:text-red-400" />;
             default:
                 return null;
         }
@@ -166,15 +166,15 @@ const AdvertiseRequest = () => {
         const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
         switch (status) {
             case 'approved':
-                return `${baseClasses} bg-green-100 text-green-800`;
+                return `${baseClasses} bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400`;
             case 'active':
-                return `${baseClasses} bg-blue-100 text-blue-800`;
+                return `${baseClasses} bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400`;
             case 'pending':
-                return `${baseClasses} bg-yellow-100 text-yellow-800`;
+                return `${baseClasses} bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400`;
             case 'rejected':
-                return `${baseClasses} bg-red-100 text-red-800`;
+                return `${baseClasses} bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400`;
             default:
-                return `${baseClasses} bg-gray-100 text-gray-800`;
+                return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300`;
         }
     };
 
@@ -240,74 +240,74 @@ const AdvertiseRequest = () => {
         <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Requests</p>
-                            <p className="text-2xl font-bold text-gray-900">{summaryStats.totalRequests}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Requests</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{summaryStats.totalRequests}</p>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FaBullhorn className="text-blue-600" size={24} />
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                            <FaBullhorn className="text-blue-600 dark:text-blue-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Active Ads</p>
-                            <p className="text-2xl font-bold text-green-600">{summaryStats.activeAds}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Ads</p>
+                            <p className="text-2xl font-bold text-green-600 dark:text-green-400">{summaryStats.activeAds}</p>
                         </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <FaCheckCircle className="text-green-600" size={24} />
+                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                            <FaCheckCircle className="text-green-600 dark:text-green-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Clicks</p>
-                            <p className="text-2xl font-bold text-blue-600">{summaryStats.totalClicks.toLocaleString()}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clicks</p>
+                            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{summaryStats.totalClicks.toLocaleString()}</p>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FaEye className="text-blue-600" size={24} />
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                            <FaEye className="text-blue-600 dark:text-blue-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                            <p className="text-2xl font-bold text-red-600">${summaryStats.totalSpent.toFixed(2)}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spent</p>
+                            <p className="text-2xl font-bold text-red-600 dark:text-red-400">${summaryStats.totalSpent.toFixed(2)}</p>
                         </div>
-                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <FaDollarSign className="text-red-600" size={24} />
+                        <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+                            <FaDollarSign className="text-red-600 dark:text-red-400" size={24} />
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Filters and Actions */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div className="flex flex-col sm:flex-row gap-4 flex-1">
                         <div className="relative flex-1 max-w-md">
-                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                             <input
                                 type="text"
                                 placeholder="Search by title, medicine, or request ID..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                             />
                         </div>
 
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                             <option value="all">All Status</option>
                             <option value="active">Active</option>
@@ -319,7 +319,7 @@ const AdvertiseRequest = () => {
 
                     <button
                         onClick={handleCreateRequest}
-                        className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                        className="flex items-center space-x-2 bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
                     >
                         <FaPlus />
                         <span>New Request</span>
@@ -328,31 +328,31 @@ const AdvertiseRequest = () => {
             </div>
 
             {/* Requests Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Advertisement
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Duration & Budget
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Performance
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {filteredRequests.map((request) => (
-                                <tr key={request.id} className="hover:bg-gray-50">
+                                <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4">
                                         <div className="flex items-start space-x-3">
                                             <img
@@ -361,27 +361,27 @@ const AdvertiseRequest = () => {
                                                 className="w-16 h-16 rounded-lg object-cover"
                                             />
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-gray-900 truncate">{request.title}</p>
-                                                <p className="text-sm text-gray-500">{request.medicineName}</p>
-                                                <p className="text-xs text-gray-400 mt-1 line-clamp-2">{request.description}</p>
+                                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{request.title}</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">{request.medicineName}</p>
+                                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2">{request.description}</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">{request.duration} days</p>
-                                            <p className="text-sm text-gray-500">${request.budget} budget</p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{request.duration} days</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">${request.budget} budget</p>
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">
                                                 {formatDate(request.startDate)} - {formatDate(request.endDate)}
                                             </p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm text-gray-900">{request.clicks.toLocaleString()} clicks</p>
-                                            <p className="text-sm text-gray-500">{request.impressions.toLocaleString()} impressions</p>
-                                            <p className="text-xs text-green-600">{request.conversions} conversions</p>
-                                            <p className="text-xs text-red-500">${request.cost.toFixed(2)} spent</p>
+                                            <p className="text-sm text-gray-900 dark:text-white">{request.clicks.toLocaleString()} clicks</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{request.impressions.toLocaleString()} impressions</p>
+                                            <p className="text-xs text-green-600 dark:text-green-400">{request.conversions} conversions</p>
+                                            <p className="text-xs text-red-500 dark:text-red-400">${request.cost.toFixed(2)} spent</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -392,7 +392,7 @@ const AdvertiseRequest = () => {
                                             </span>
                                         </div>
                                         {request.adminNote && (
-                                            <p className="text-xs text-gray-500 mt-1 max-w-xs truncate" title={request.adminNote}>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs truncate" title={request.adminNote}>
                                                 {request.adminNote}
                                             </p>
                                         )}
@@ -401,14 +401,14 @@ const AdvertiseRequest = () => {
                                         <div className="flex space-x-2">
                                             <button
                                                 onClick={() => handleEditRequest(request)}
-                                                className="text-blue-600 hover:text-blue-900"
+                                                className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                                                 disabled={request.status === 'active'}
                                             >
                                                 <FaEdit />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteRequest(request.id)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                                                 disabled={request.status === 'active'}
                                             >
                                                 <FaTrash />
@@ -423,12 +423,12 @@ const AdvertiseRequest = () => {
 
                 {filteredRequests.length === 0 && (
                     <div className="text-center py-12">
-                        <FaBullhorn className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No advertisement requests found</h3>
-                        <p className="text-gray-500 mb-6">Create your first advertisement request to promote your medicines.</p>
+                        <FaBullhorn className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No advertisement requests found</h3>
+                        <p className="text-gray-500 dark:text-gray-400 mb-6">Create your first advertisement request to promote your medicines.</p>
                         <button
                             onClick={handleCreateRequest}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                            className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
                         >
                             Create New Request
                         </button>
@@ -439,16 +439,16 @@ const AdvertiseRequest = () => {
             {/* Request Modal */}
             {showRequestModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <form onSubmit={handleSubmit(onSubmit)} className="p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                     {editMode ? 'Edit Advertisement Request' : 'Create Advertisement Request'}
                                 </h3>
                                 <button
                                     type="button"
                                     onClick={() => setShowRequestModal(false)}
-                                    className="text-gray-400 hover:text-gray-600"
+                                    className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                                 >
                                     <FaTimesCircle size={24} />
                                 </button>
@@ -457,12 +457,12 @@ const AdvertiseRequest = () => {
                             <div className="space-y-6">
                                 {/* Medicine Selection */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Select Medicine *
                                     </label>
                                     <select
                                         {...register('medicineId', { required: 'Please select a medicine' })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Choose a medicine...</option>
                                         {mockMedicines.map(medicine => (
@@ -472,13 +472,13 @@ const AdvertiseRequest = () => {
                                         ))}
                                     </select>
                                     {errors.medicineId && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.medicineId.message}</p>
+                                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.medicineId.message}</p>
                                     )}
                                 </div>
 
                                 {/* Title */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Advertisement Title *
                                     </label>
                                     <input
@@ -487,17 +487,17 @@ const AdvertiseRequest = () => {
                                             required: 'Title is required',
                                             minLength: { value: 10, message: 'Title must be at least 10 characters' }
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                         placeholder="Enter a compelling title for your advertisement"
                                     />
                                     {errors.title && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.title.message}</p>
                                     )}
                                 </div>
 
                                 {/* Description */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Description *
                                     </label>
                                     <textarea
@@ -506,23 +506,23 @@ const AdvertiseRequest = () => {
                                             minLength: { value: 20, message: 'Description must be at least 20 characters' }
                                         })}
                                         rows={4}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                         placeholder="Describe your medicine and its benefits"
                                     />
                                     {errors.description && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.description.message}</p>
                                     )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {/* Duration */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Duration (Days) *
                                         </label>
                                         <select
                                             {...register('duration', { required: 'Duration is required' })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                         >
                                             <option value="">Select duration...</option>
                                             <option value="7">7 Days</option>
@@ -533,13 +533,13 @@ const AdvertiseRequest = () => {
                                             <option value="90">90 Days</option>
                                         </select>
                                         {errors.duration && (
-                                            <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>
+                                            <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.duration.message}</p>
                                         )}
                                     </div>
 
                                     {/* Budget */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Budget ($) *
                                         </label>
                                         <input
@@ -550,35 +550,35 @@ const AdvertiseRequest = () => {
                                                 required: 'Budget is required',
                                                 min: { value: 10, message: 'Minimum budget is $10' }
                                             })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                             placeholder="Enter your advertising budget"
                                         />
                                         {errors.budget && (
-                                            <p className="text-red-500 text-sm mt-1">{errors.budget.message}</p>
+                                            <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.budget.message}</p>
                                         )}
                                     </div>
                                 </div>
 
                                 {/* Start Date */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Start Date *
                                     </label>
                                     <input
                                         type="date"
                                         {...register('startDate', { required: 'Start date is required' })}
                                         min={new Date().toISOString().split('T')[0]}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                     />
                                     {errors.startDate && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
+                                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.startDate.message}</p>
                                     )}
                                 </div>
 
                                 {/* Terms Notice */}
-                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                    <h4 className="text-sm font-medium text-yellow-800 mb-2">Advertisement Guidelines</h4>
-                                    <ul className="text-sm text-yellow-700 space-y-1">
+                                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                                    <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">Advertisement Guidelines</h4>
+                                    <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
                                         <li>• All advertisements must comply with medical advertising regulations</li>
                                         <li>• Content will be reviewed by our admin team before approval</li>
                                         <li>• Budget will be charged daily based on performance</li>
@@ -587,17 +587,17 @@ const AdvertiseRequest = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+                            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                                 <button
                                     type="button"
                                     onClick={() => setShowRequestModal(false)}
-                                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                                    className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
                                 >
                                     {editMode ? 'Update Request' : 'Submit Request'}
                                 </button>

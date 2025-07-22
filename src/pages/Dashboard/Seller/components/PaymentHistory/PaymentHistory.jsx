@@ -144,11 +144,11 @@ const PaymentHistory = () => {
     const getStatusIcon = (status) => {
         switch (status) {
             case 'completed':
-                return <FaCheckCircle className="text-green-500" />;
+                return <FaCheckCircle className="text-green-500 dark:text-green-400" />;
             case 'pending':
-                return <FaClock className="text-yellow-500" />;
+                return <FaClock className="text-yellow-500 dark:text-yellow-400" />;
             case 'failed':
-                return <FaTimesCircle className="text-red-500" />;
+                return <FaTimesCircle className="text-red-500 dark:text-red-400" />;
             default:
                 return null;
         }
@@ -158,13 +158,13 @@ const PaymentHistory = () => {
         const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
         switch (status) {
             case 'completed':
-                return `${baseClasses} bg-green-100 text-green-800`;
+                return `${baseClasses} bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400`;
             case 'pending':
-                return `${baseClasses} bg-yellow-100 text-yellow-800`;
+                return `${baseClasses} bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400`;
             case 'failed':
-                return `${baseClasses} bg-red-100 text-red-800`;
+                return `${baseClasses} bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400`;
             default:
-                return `${baseClasses} bg-gray-100 text-gray-800`;
+                return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300`;
         }
     };
 
@@ -212,74 +212,74 @@ const PaymentHistory = () => {
         <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Payments</p>
-                            <p className="text-2xl font-bold text-gray-900">{summaryStats.totalPayments}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Payments</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{summaryStats.totalPayments}</p>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FaCalendarAlt className="text-blue-600" size={24} />
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                            <FaCalendarAlt className="text-blue-600 dark:text-blue-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Net Earnings</p>
-                            <p className="text-2xl font-bold text-green-600">${summaryStats.netEarnings.toFixed(2)}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Net Earnings</p>
+                            <p className="text-2xl font-bold text-green-600 dark:text-green-400">${summaryStats.netEarnings.toFixed(2)}</p>
                         </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <FaCheckCircle className="text-green-600" size={24} />
+                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                            <FaCheckCircle className="text-green-600 dark:text-green-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Pending</p>
-                            <p className="text-2xl font-bold text-yellow-600">{summaryStats.pendingPayments}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
+                            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{summaryStats.pendingPayments}</p>
                         </div>
-                        <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <FaClock className="text-yellow-600" size={24} />
+                        <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
+                            <FaClock className="text-yellow-600 dark:text-yellow-400" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Commission</p>
-                            <p className="text-2xl font-bold text-red-600">${summaryStats.totalCommission.toFixed(2)}</p>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Commission</p>
+                            <p className="text-2xl font-bold text-red-600 dark:text-red-400">${summaryStats.totalCommission.toFixed(2)}</p>
                         </div>
-                        <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <FaTimesCircle className="text-red-600" size={24} />
+                        <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+                            <FaTimesCircle className="text-red-600 dark:text-red-400" size={24} />
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div className="flex flex-col sm:flex-row gap-4 flex-1">
                         <div className="relative flex-1 max-w-md">
-                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                             <input
                                 type="text"
                                 placeholder="Search by order ID, customer, or transaction..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                             />
                         </div>
 
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                         >
                             <option value="all">All Status</option>
                             <option value="completed">Completed</option>
@@ -290,7 +290,7 @@ const PaymentHistory = () => {
                         <select
                             value={dateFilter}
                             onChange={(e) => setDateFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                         >
                             <option value="all">All Time</option>
                             <option value="today">Today</option>
@@ -301,7 +301,7 @@ const PaymentHistory = () => {
 
                     <button
                         onClick={handleExportData}
-                        className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                        className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
                     >
                         <FaDownload />
                         <span>Export CSV</span>
@@ -310,52 +310,52 @@ const PaymentHistory = () => {
             </div>
 
             {/* Payments Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Payment Details
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Customer
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Amount
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Date
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {filteredPayments.map((payment) => (
-                                <tr key={payment.id} className="hover:bg-gray-50">
+                                <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">{payment.id}</p>
-                                            <p className="text-sm text-gray-500">Order: {payment.orderId}</p>
-                                            <p className="text-xs text-gray-400">{payment.transactionId}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{payment.id}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Order: {payment.orderId}</p>
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">{payment.transactionId}</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">{payment.customerName}</p>
-                                            <p className="text-sm text-gray-500">{payment.customerEmail}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{payment.customerName}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{payment.customerEmail}</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">${payment.amount.toFixed(2)}</p>
-                                            <p className="text-xs text-red-500">Commission: ${payment.commission.toFixed(2)}</p>
-                                            <p className="text-xs text-green-600">Net: ${payment.netAmount.toFixed(2)}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">${payment.amount.toFixed(2)}</p>
+                                            <p className="text-xs text-red-500 dark:text-red-400">Commission: ${payment.commission.toFixed(2)}</p>
+                                            <p className="text-xs text-green-600 dark:text-green-400">Net: ${payment.netAmount.toFixed(2)}</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -366,13 +366,13 @@ const PaymentHistory = () => {
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         {formatDate(payment.createdAt)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <button
                                             onClick={() => handleViewDetails(payment)}
-                                            className="text-blue-600 hover:text-blue-900 flex items-center space-x-1"
+                                            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 flex items-center space-x-1"
                                         >
                                             <FaEye />
                                             <span>View</span>
@@ -386,7 +386,7 @@ const PaymentHistory = () => {
 
                 {filteredPayments.length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500">No payments found matching your criteria.</p>
+                        <p className="text-gray-500 dark:text-gray-400">No payments found matching your criteria.</p>
                     </div>
                 )}
             </div>
@@ -394,13 +394,13 @@ const PaymentHistory = () => {
             {/* Payment Detail Modal */}
             {showDetailModal && selectedPayment && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900">Payment Details</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Payment Details</h3>
                                 <button
                                     onClick={() => setShowDetailModal(false)}
-                                    className="text-gray-400 hover:text-gray-600"
+                                    className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                                 >
                                     <FaTimesCircle size={24} />
                                 </button>
@@ -410,54 +410,54 @@ const PaymentHistory = () => {
                                 {/* Payment Info */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Payment ID</label>
-                                        <p className="text-sm text-gray-900">{selectedPayment.id}</p>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment ID</label>
+                                        <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.id}</p>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Order ID</label>
-                                        <p className="text-sm text-gray-900">{selectedPayment.orderId}</p>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order ID</label>
+                                        <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.orderId}</p>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
-                                        <p className="text-sm text-gray-900">{selectedPayment.transactionId}</p>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Transaction ID</label>
+                                        <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.transactionId}</p>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                                        <p className="text-sm text-gray-900">{selectedPayment.paymentMethod}</p>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Method</label>
+                                        <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.paymentMethod}</p>
                                     </div>
                                 </div>
 
                                 {/* Customer Info */}
                                 <div>
-                                    <h4 className="text-md font-medium text-gray-900 mb-3">Customer Information</h4>
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-3">Customer Information</h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                            <p className="text-sm text-gray-900">{selectedPayment.customerName}</p>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                                            <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.customerName}</p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                            <p className="text-sm text-gray-900">{selectedPayment.customerEmail}</p>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                                            <p className="text-sm text-gray-900 dark:text-white">{selectedPayment.customerEmail}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Amount Breakdown */}
                                 <div>
-                                    <h4 className="text-md font-medium text-gray-900 mb-3">Amount Breakdown</h4>
-                                    <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-3">Amount Breakdown</h4>
+                                    <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg space-y-2">
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Total Amount:</span>
-                                            <span className="text-sm font-medium">${selectedPayment.amount.toFixed(2)}</span>
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">Total Amount:</span>
+                                            <span className="text-sm font-medium dark:text-white">${selectedPayment.amount.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Platform Commission:</span>
-                                            <span className="text-sm font-medium text-red-600">-${selectedPayment.commission.toFixed(2)}</span>
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">Platform Commission:</span>
+                                            <span className="text-sm font-medium text-red-600 dark:text-red-400">-${selectedPayment.commission.toFixed(2)}</span>
                                         </div>
-                                        <div className="border-t pt-2">
+                                        <div className="border-t border-gray-200 dark:border-gray-600 pt-2">
                                             <div className="flex justify-between">
-                                                <span className="text-sm font-medium text-gray-900">Net Amount:</span>
-                                                <span className="text-sm font-bold text-green-600">${selectedPayment.netAmount.toFixed(2)}</span>
+                                                <span className="text-sm font-medium text-gray-900 dark:text-white">Net Amount:</span>
+                                                <span className="text-sm font-bold text-green-600 dark:text-green-400">${selectedPayment.netAmount.toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -465,15 +465,15 @@ const PaymentHistory = () => {
 
                                 {/* Medicines */}
                                 <div>
-                                    <h4 className="text-md font-medium text-gray-900 mb-3">Medicines Ordered</h4>
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-3">Medicines Ordered</h4>
                                     <div className="space-y-2">
                                         {selectedPayment.medicines.map((medicine, index) => (
-                                            <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                            <div key={index} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-900">{medicine.name}</p>
-                                                    <p className="text-xs text-gray-500">Quantity: {medicine.quantity}</p>
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{medicine.name}</p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">Quantity: {medicine.quantity}</p>
                                                 </div>
-                                                <p className="text-sm font-medium">${medicine.price.toFixed(2)}</p>
+                                                <p className="text-sm font-medium dark:text-white">${medicine.price.toFixed(2)}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -481,7 +481,7 @@ const PaymentHistory = () => {
 
                                 {/* Status and Dates */}
                                 <div>
-                                    <h4 className="text-md font-medium text-gray-900 mb-3">Status & Timeline</h4>
+                                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-3">Status & Timeline</h4>
                                     <div className="space-y-3">
                                         <div className="flex items-center space-x-3">
                                             {getStatusIcon(selectedPayment.status)}
@@ -490,19 +490,19 @@ const PaymentHistory = () => {
                                             </span>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-600">Created: {formatDate(selectedPayment.createdAt)}</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Created: {formatDate(selectedPayment.createdAt)}</p>
                                             {selectedPayment.completedAt && (
-                                                <p className="text-sm text-gray-600">Completed: {formatDate(selectedPayment.completedAt)}</p>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">Completed: {formatDate(selectedPayment.completedAt)}</p>
                                             )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+                            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
                                 <button
                                     onClick={() => setShowDetailModal(false)}
-                                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
                                 >
                                     Close
                                 </button>

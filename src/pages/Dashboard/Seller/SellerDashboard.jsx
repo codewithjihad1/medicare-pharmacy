@@ -57,7 +57,7 @@ const SellerDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
                 <div
@@ -68,31 +68,31 @@ const SellerDashboard = () => {
 
             {/* Sidebar */}
             <div className={`
-                !fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out
+                !fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out
                 lg:translate-x-0 lg:static lg:inset-0
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
-                <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-800">Seller Panel</h2>
+                <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">Seller Panel</h2>
                     <button
                         onClick={() => setSidebarOpen(false)}
-                        className="lg:hidden text-gray-500 hover:text-gray-700"
+                        className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                     >
                         <FaTimes size={20} />
                     </button>
                 </div>
 
                 {/* User Info */}
-                <div className="p-6 border-b border-gray-200">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
                             <span className="text-white font-bold text-sm">
                                 {user?.displayName?.charAt(0).toUpperCase() || 'S'}
                             </span>
                         </div>
                         <div>
-                            <p className="font-medium text-gray-800">{user?.displayName || 'Seller'}</p>
-                            <p className="text-sm text-gray-500">Seller Account</p>
+                            <p className="font-medium text-gray-800 dark:text-white">{user?.displayName || 'Seller'}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Seller Account</p>
                         </div>
                     </div>
                 </div>
@@ -111,8 +111,8 @@ const SellerDashboard = () => {
                                 className={`
                   w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200
                   ${activeTab === item.id
-                                        ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400'
+                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-white'
                                     }
                 `}
                             >
@@ -124,10 +124,10 @@ const SellerDashboard = () => {
                 </nav>
 
                 {/* Logout Button */}
-                <div className="p-4 border-t border-gray-200">
+                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200"
                     >
                         <FaSignOutAlt size={20} />
                         <span className="font-medium">Logout</span>
@@ -138,24 +138,24 @@ const SellerDashboard = () => {
             {/* Main Content */}
             <div className="flex-1 lg:ml-0 lg:pl-64 w-full">
                 {/* Header */}
-                <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+                <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between h-16 px-6">
                         <div className="flex items-center space-x-4">
                             <button
                                 onClick={() => setSidebarOpen(true)}
-                                className="lg:hidden text-gray-500 hover:text-gray-700"
+                                className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                             >
                                 <FaBars size={20} />
                             </button>
-                            <h1 className="text-2xl font-bold text-gray-800">
+                            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                                 {sidebarItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
                             </h1>
                         </div>
 
                         <div className="flex items-center space-x-4">
                             <div className="hidden md:block">
-                                <p className="text-sm text-gray-500">Welcome back,</p>
-                                <p className="font-medium text-gray-800">{user?.displayName || 'Seller'}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back,</p>
+                                <p className="font-medium text-gray-800 dark:text-white">{user?.displayName || 'Seller'}</p>
                             </div>
                         </div>
                     </div>
