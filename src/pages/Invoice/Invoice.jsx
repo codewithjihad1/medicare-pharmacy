@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { FaCheckCircle, FaDownload, FaPrint, FaHome, FaShoppingCart } from 'react-icons/fa';
+import { pdf } from '@react-pdf/renderer';
 import toast from 'react-hot-toast';
+import Loading from '../../components/ui/Loading/Loading';
+import InvoicePDF from './components/InvoicePDF';
 
 const Invoice = () => {
     const navigate = useNavigate();
     const [paymentData, setPaymentData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         // Get payment data from localStorage
@@ -25,16 +29,42 @@ const Invoice = () => {
         window.print();
     };
 
-    const handleDownload = () => {
-        toast.success('Invoice download feature coming soon!');
+    const handleDownload = async () => {
+        if (!paymentData) {
+            toast.error('No invoice data available');
+            return;
+        }
+
+        setDownloading(true);
+        try {
+            // Generate PDF blob
+            const blob = await pdf(<InvoicePDF paymentData={paymentData} />).toBlob();
+
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `MediCare-Invoice-${paymentData.id}.pdf`;
+
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Clean up
+            URL.revokeObjectURL(url);
+
+            toast.success('Invoice downloaded successfully!');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast.error('Failed to download invoice. Please try again.');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     if (!paymentData) {
@@ -76,7 +106,7 @@ const Invoice = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex justify-center space-x-4 mb-8">
+                <div className="flex justify-center space-x-4 mb-8 print:hidden">
                     <button
                         onClick={handlePrint}
                         className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -86,10 +116,11 @@ const Invoice = () => {
                     </button>
                     <button
                         onClick={handleDownload}
-                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        disabled={downloading}
+                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <FaDownload className="mr-2" />
-                        Download PDF
+                        <FaDownload className={`mr-2 ${downloading ? 'animate-spin' : ''}`} />
+                        {downloading ? 'Generating PDF...' : 'Download PDF'}
                     </button>
                 </div>
 
@@ -247,7 +278,7 @@ const Invoice = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center space-x-4 print:hidden">
                     <Link
                         to="/"
                         className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
