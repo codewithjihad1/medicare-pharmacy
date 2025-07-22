@@ -4,8 +4,6 @@ import axiosInstance from '../../../../../api/axiosInstance';
 import Loading from '../../../../../components/ui/Loading/Loading';
 
 const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, onSubmit, categories }) => {
-    console.log("🚀 ~ AddOrEditMedicine ~ medicine:", medicine)
-    // Fetch companies data
     const { data: companies, isLoading: isCompaniesLoading } = useQuery({
         queryKey: ['companies'],
         queryFn: async () => {
@@ -114,6 +112,7 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
                                 Company *
                             </label>
                             <select
+                                defaultValue={medicine ? medicine.company : ''}
                                 {...register('company', { required: 'Company is required' })}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             >
@@ -154,6 +153,7 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
                             </label>
                             <input
                                 type="number"
+                                defaultValue={medicine ? medicine.pricePerUnit : 0}
                                 {...register('pricePerUnit', { required: 'Price is required', min: 0 })}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 placeholder="0.00"
@@ -191,6 +191,7 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
                             </label>
                             <input
                                 type="number"
+                                defaultValue={medicine ? medicine.stockQuantity : 0}
                                 {...register('stockQuantity', { required: 'Stock quantity is required', min: 0 })}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 placeholder="Enter stock quantity"

@@ -7,18 +7,19 @@ import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '../../../../../api/axiosInstance';
 import { useAuth } from '../../../../../hooks/useAuth';
 import AddOrEditMedicine from './AddOrEditMedicine';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const ManageMedicines = () => {
     const { user } = useAuth();
     const [medicines, setMedicines] = useState([]);
     const [filteredMedicines, setFilteredMedicines] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingMedicine, setEditingMedicine] = useState(null);
     const [viewingMedicine, setViewingMedicine] = useState(null);
+    const queryClient = useQueryClient();
 
     const {
         register,
@@ -29,7 +30,7 @@ const ManageMedicines = () => {
     } = useForm();
 
     // get medicines
-    const { data: medicinesData, isLoading: isMedicinesLoading } = useQuery({
+    const { data: medicinesData, isLoading: isMedicinesLoading, refetch: refetchMedicines } = useQuery({
         queryKey: ['medicines'],
         enabled: !!user?.email,
         queryFn: async () => {
@@ -51,7 +52,6 @@ const ManageMedicines = () => {
         if (medicinesData) {
             setMedicines(medicinesData);
             setFilteredMedicines(medicinesData);
-            setLoading(false);
         }
     }, [medicinesData]);
 
@@ -82,33 +82,72 @@ const ManageMedicines = () => {
     }, [medicines, searchTerm, categoryFilter, statusFilter]);
 
     // Handle form submission (add/edit medicine)
+    // Add & update medicine using TanStack Query mutations
+
+
+
+    // Mutation for adding medicine
+    const addMedicineMutation = useMutation({
+        mutationFn: async (newMedicine) => {
+            const response = await axiosInstance.post('/medicines', newMedicine);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['medicines']);
+            toast.success('Medicine added successfully');
+        },
+        onError: () => {
+            toast.error('Failed to add medicine');
+        }
+    });
+
+    // Mutation for updating medicine
+    const updateMedicineMutation = useMutation({
+        mutationFn: async ({ id, updatedData }) => {
+            const response = await axiosInstance.put(`/medicines/${id}`, updatedData);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['medicines']);
+            toast.success('Medicine updated successfully');
+        },
+        onError: () => {
+            toast.error('Failed to update medicine');
+        }
+    });
+
     const onSubmit = async (data) => {
         try {
             if (editingMedicine) {
                 // Update existing medicine
-                setMedicines(prevMedicines =>
-                    prevMedicines.map(med =>
-                        med.id === editingMedicine.id
-                            ? { ...med, ...data }
-                            : med
-                    )
-                );
-                toast.success('Medicine updated successfully');
+                await updateMedicineMutation.mutateAsync({
+                    id: editingMedicine._id,
+                    updatedData: {
+                        ...editingMedicine,
+                        ...data,
+                        stockQuantity: parseInt(data.stockQuantity),
+                        pricePerUnit: parseFloat(data.pricePerUnit),
+                        discount: parseFloat(data.discount) || 0,
+                    }
+                });
             } else {
                 // Add new medicine
-                const newMedicine = {
-                    id: Date.now(),
+                await addMedicineMutation.mutateAsync({
                     ...data,
                     status: 'pending',
-                    stock: parseInt(data.stock),
-                    price: parseFloat(data.price),
+                    stockQuantity: parseInt(data.stockQuantity),
+                    pricePerUnit: parseFloat(data.pricePerUnit),
                     discount: parseFloat(data.discount) || 0,
-                    createdAt: new Date().toISOString()
-                };
-                setMedicines(prevMedicines => [...prevMedicines, newMedicine]);
-                toast.success('Medicine added successfully');
+                    createdAt: new Date().toISOString(),
+                    seller: {
+                        email: user?.email,
+                        displayName: user?.displayName || 'Unknown Seller',
+                        photoURL: user?.photoURL || ''
+                    }
+                });
             }
 
+            refetchMedicines();
             setIsModalOpen(false);
             setEditingMedicine(null);
             reset();
@@ -128,9 +167,9 @@ const ManageMedicines = () => {
         setValue('category', medicine.category);
         setValue('company', medicine.company);
         setValue('massUnit', medicine.massUnit);
-        setValue('price', medicine.price);
+        setValue('price', medicine.pricePerUnit); // updated field
         setValue('discount', medicine.discount);
-        setValue('stock', medicine.stock);
+        setValue('stock', medicine.stockQuantity); // updated field
         setIsModalOpen(true);
     };
 

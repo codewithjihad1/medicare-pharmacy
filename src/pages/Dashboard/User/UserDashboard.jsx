@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { FaUser, FaShoppingCart, FaHeart, FaCog } from 'react-icons/fa';
-import axiosInstance from '../../../api/axiosInstance';
 import Loading from '../../../components/ui/Loading/Loading';
 import { Navigate } from 'react-router';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const UserDashboard = () => {
     const { user, loading } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const [userRole, setUserRole] = useState('');
 
 
@@ -14,7 +15,7 @@ const UserDashboard = () => {
         const fetchUserFromDb = async () => {
             if (user) {
                 try {
-                    const response = await axiosInstance.get(`/users/${user.email}`);
+                    const response = await axiosSecure.get(`/users/${user.email}`);
                     setUserRole(response.data.role);
                 } catch (error) {
                     console.error("Error fetching user role:", error);

@@ -8,8 +8,8 @@ import toast from 'react-hot-toast';
 import OrderSummary from './components/OrderSummary/OrderSummary';
 import PaymentSection from './components/PaymentSection/PaymentSection';
 
-// Initialize Stripe (In production, this should be your actual publishable key)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_TYooMQauvdEDq54NiTphI7jx');
+// loadStripe initializes Stripe with your publishable key
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // Mock cart data - In real app, this would come from context/localStorage/API
 const mockCartItems = [

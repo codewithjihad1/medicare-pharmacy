@@ -3,6 +3,7 @@ import { FaEdit, FaTrash, FaEye, FaPills } from 'react-icons/fa';
 import Loading from '../../../../../components/ui/Loading/Loading';
 
 const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedicine, loading }) => {
+    console.log("🚀 ~ MedicineTable ~ medicines:", medicines)
     const getStatusColor = (status) => {
         switch (status) {
             case 'active':
@@ -83,11 +84,11 @@ const MedicineTable = ({ medicines, onEditMedicine, onDeleteMedicine, onViewMedi
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-bold text-gray-900 dark:text-white">
-                                    ${medicine.pricePerUnit.toFixed(2)}
+                                    ${medicine?.pricePerUnit?.toFixed(2)}
                                 </div>
                                 {medicine.discount > 0 && (
                                     <div className="text-xs text-red-500">
-                                        {medicine.discount}% OFF
+                                        {medicine?.discount}% OFF
                                     </div>
                                 )}
                             </td>
