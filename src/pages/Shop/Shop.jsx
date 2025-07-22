@@ -29,6 +29,7 @@ const Shop = () => {
                 setFilteredMedicines(response.data);
             } catch (error) {
                 toast.error('Failed to fetch medicines');
+                console.error('Error fetching medicines:', error);
             } finally {
                 setLoading(false);
             }
@@ -87,13 +88,6 @@ const Shop = () => {
         setShowModal(true);
     };
 
-    // Handle add to cart
-    const handleAddToCart = (medicine) => {
-        // In real app, this would add to cart context/state
-        toast.success(`${medicine.name} added to cart!`);
-        console.log('Added to cart:', medicine);
-    };
-
     // Calculate discounted price
     const getDiscountedPrice = (price, discount) => {
         return discount > 0 ? price - (price * discount / 100) : price;
@@ -144,7 +138,6 @@ const Shop = () => {
                     <MedicineTable
                         medicines={currentItems}
                         onViewDetails={handleViewDetails}
-                        onAddToCart={handleAddToCart}
                         getDiscountedPrice={getDiscountedPrice}
                     />
 
@@ -164,7 +157,6 @@ const Shop = () => {
                 isOpen={showModal}
                 medicine={selectedMedicine}
                 onClose={handleModalClose}
-                onAddToCart={handleAddToCart}
                 getDiscountedPrice={getDiscountedPrice}
             />
         </div>

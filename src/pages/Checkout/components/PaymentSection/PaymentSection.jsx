@@ -4,9 +4,11 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { FaCreditCard, FaLock, FaSpinner } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../../../api/axiosInstance';
+import useTheme from '../../../../hooks/useTheme';
 
 const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess }) => {
     const navigate = useNavigate();
+    const {theme} = useTheme();
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);
@@ -40,7 +42,7 @@ const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess 
         style: {
             base: {
                 fontSize: '16px',
-                color: '#424770',
+                color: theme === 'dark' ? '#fff' : '#424770',
                 '::placeholder': {
                     color: '#aab7c4',
                 },
@@ -144,9 +146,7 @@ const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess 
                     }
 
                     // Navigate to invoice page
-                    setTimeout(() => {
-                        navigate('/invoice');
-                    }, 1500);
+                    navigate('/invoice');
 
                 } catch (orderError) {
                     console.error('Error creating order:', orderError);
@@ -210,9 +210,6 @@ const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess 
                             <div className="border border-gray-300 dark:border-gray-600 rounded-md p-4 bg-white dark:bg-gray-700">
                                 <CardElement options={cardElementOptions} />
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                Test card: 4242 4242 4242 4242, any future date, any 3-digit CVC
-                            </p>
                         </div>
                     )}
 

@@ -1,7 +1,10 @@
 import React from 'react';
 import { FaEye, FaShoppingCart } from 'react-icons/fa';
+import addToCart from '../../../../utils/addToCart';
 
-const MedicineTable = ({ medicines, onViewDetails, onAddToCart, getDiscountedPrice }) => {
+const MedicineTable = ({ medicines, onViewDetails, getDiscountedPrice }) => {
+
+
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
@@ -95,7 +98,7 @@ const MedicineTable = ({ medicines, onViewDetails, onAddToCart, getDiscountedPri
                                             <FaEye />
                                         </button>
                                         <button
-                                            onClick={() => onAddToCart(medicine)}
+                                            onClick={() => addToCart(medicine)}
                                             disabled={!medicine.inStock || medicine.stockQuantity === 0}
                                             className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-2 rounded-full hover:bg-green-100 dark:hover:bg-green-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                             title="Add to Cart"

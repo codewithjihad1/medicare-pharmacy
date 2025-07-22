@@ -5,9 +5,9 @@ const CartItem = ({ item, onUpdateQuantity, onRemoveItem, getDiscountedPrice }) 
     const handleQuantityChange = (newQuantity) => {
         if (newQuantity < 1) return;
         if (newQuantity > item.stockQuantity) {
-            return; // Don't allow quantity greater than stock
+            return;
         }
-        onUpdateQuantity(item.id, newQuantity);
+        onUpdateQuantity(item._id, newQuantity);
     };
 
     const itemPrice = getDiscountedPrice(item.pricePerUnit, item.discount || 0);
@@ -108,7 +108,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemoveItem, getDiscountedPrice }) 
                 {/* Remove Button */}
                 <div className="flex flex-col items-center">
                     <button
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={() => onRemoveItem(item._id)}
                         className="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-red-900 rounded-full transition-colors"
                         title="Remove from cart"
                     >

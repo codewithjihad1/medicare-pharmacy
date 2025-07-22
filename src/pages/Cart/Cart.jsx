@@ -4,60 +4,18 @@ import { FaShoppingCart, FaArrowLeft } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import CartItem from './components/CartItem/CartItem';
 import CartSummary from './components/CartSummary/CartSummary';
-
-// Mock cart data - In real app, this would come from context/localStorage/API
-const mockCartItems = [
-    {
-        id: 1,
-        name: 'Paracetamol',
-        genericName: 'Acetaminophen',
-        company: 'Square Pharmaceuticals',
-        category: 'tablet',
-        massUnit: '500mg',
-        pricePerUnit: 2.50,
-        discount: 10,
-        quantity: 2,
-        stockQuantity: 500,
-        image: 'https://via.placeholder.com/300x200?text=Paracetamol'
-    },
-    {
-        id: 2,
-        name: 'Amoxicillin Syrup',
-        genericName: 'Amoxicillin',
-        company: 'Beximco Pharmaceuticals',
-        category: 'syrup',
-        massUnit: '250mg/5ml',
-        pricePerUnit: 15.75,
-        discount: 5,
-        quantity: 1,
-        stockQuantity: 120,
-        image: 'https://via.placeholder.com/300x200?text=Amoxicillin'
-    },
-    {
-        id: 3,
-        name: 'Vitamin D3 Capsules',
-        genericName: 'Cholecalciferol',
-        company: 'Incepta Pharmaceuticals',
-        category: 'capsule',
-        massUnit: '1000 IU',
-        pricePerUnit: 8.50,
-        discount: 0,
-        quantity: 3,
-        stockQuantity: 200,
-        image: 'https://via.placeholder.com/300x200?text=Vitamin+D3'
-    }
-];
+import Loading from '../../components/ui/Loading/Loading';
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate loading cart data
-        setTimeout(() => {
-            setCartItems(mockCartItems);
+        const savedCart = localStorage.getItem('cartItems');
+        if (savedCart) {
+            setCartItems(JSON.parse(savedCart));
             setLoading(false);
-        }, 1000);
+        }
     }, []);
 
     // Calculate discounted price
@@ -69,33 +27,32 @@ const Cart = () => {
     const handleUpdateQuantity = (itemId, newQuantity) => {
         setCartItems(prevItems =>
             prevItems.map(item =>
-                item.id === itemId
+                item._id === itemId
                     ? { ...item, quantity: newQuantity }
                     : item
             )
         );
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
         toast.success('Quantity updated');
     };
 
     // Handle remove item
     const handleRemoveItem = (itemId) => {
-        const itemToRemove = cartItems.find(item => item.id === itemId);
-        setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+        const itemToRemove = cartItems.find(item => item._id === itemId);
+        setCartItems(prevItems => prevItems.filter(item => item._id !== itemId));
+        localStorage.setItem('cartItems', JSON.stringify(cartItems.filter(item => item._id !== itemId)));
         toast.success(`${itemToRemove.name} removed from cart`);
     };
 
     // Handle clear cart
     const handleClearCart = () => {
         setCartItems([]);
+        localStorage.setItem('cartItems', JSON.stringify([]));
         toast.success('Cart cleared');
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (

@@ -1,11 +1,11 @@
 import React from 'react';
 import { FaTimes, FaShoppingCart } from 'react-icons/fa';
+import addToCart from '../../../../utils/addToCart';
 
 const MedicineDetailModal = ({
     isOpen,
     medicine,
     onClose,
-    onAddToCart,
     getDiscountedPrice
 }) => {
     if (!isOpen || !medicine) return null;
@@ -101,7 +101,7 @@ const MedicineDetailModal = ({
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <button
                             onClick={() => {
-                                onAddToCart(medicine);
+                                addToCart(medicine);
                                 onClose();
                             }}
                             disabled={!medicine.inStock || medicine.stockQuantity === 0}

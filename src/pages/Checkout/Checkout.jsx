@@ -12,47 +12,47 @@ import PaymentSection from './components/PaymentSection/PaymentSection';
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // Mock cart data - In real app, this would come from context/localStorage/API
-const mockCartItems = [
-    {
-        id: 1,
-        name: 'Paracetamol',
-        genericName: 'Acetaminophen',
-        company: 'Square Pharmaceuticals',
-        category: 'tablet',
-        massUnit: '500mg',
-        pricePerUnit: 2.50,
-        discount: 10,
-        quantity: 2,
-        stockQuantity: 500,
-        image: 'https://via.placeholder.com/300x200?text=Paracetamol'
-    },
-    {
-        id: 2,
-        name: 'Amoxicillin Syrup',
-        genericName: 'Amoxicillin',
-        company: 'Beximco Pharmaceuticals',
-        category: 'syrup',
-        massUnit: '250mg/5ml',
-        pricePerUnit: 15.75,
-        discount: 5,
-        quantity: 1,
-        stockQuantity: 120,
-        image: 'https://via.placeholder.com/300x200?text=Amoxicillin'
-    },
-    {
-        id: 3,
-        name: 'Vitamin D3 Capsules',
-        genericName: 'Cholecalciferol',
-        company: 'Incepta Pharmaceuticals',
-        category: 'capsule',
-        massUnit: '1000 IU',
-        pricePerUnit: 8.50,
-        discount: 0,
-        quantity: 3,
-        stockQuantity: 200,
-        image: 'https://via.placeholder.com/300x200?text=Vitamin+D3'
-    }
-];
+// const mockCartItems = [
+//     {
+//         id: 1,
+//         name: 'Paracetamol',
+//         genericName: 'Acetaminophen',
+//         company: 'Square Pharmaceuticals',
+//         category: 'tablet',
+//         massUnit: '500mg',
+//         pricePerUnit: 2.50,
+//         discount: 10,
+//         quantity: 2,
+//         stockQuantity: 500,
+//         image: 'https://via.placeholder.com/300x200?text=Paracetamol'
+//     },
+//     {
+//         id: 2,
+//         name: 'Amoxicillin Syrup',
+//         genericName: 'Amoxicillin',
+//         company: 'Beximco Pharmaceuticals',
+//         category: 'syrup',
+//         massUnit: '250mg/5ml',
+//         pricePerUnit: 15.75,
+//         discount: 5,
+//         quantity: 1,
+//         stockQuantity: 120,
+//         image: 'https://via.placeholder.com/300x200?text=Amoxicillin'
+//     },
+//     {
+//         id: 3,
+//         name: 'Vitamin D3 Capsules',
+//         genericName: 'Cholecalciferol',
+//         company: 'Incepta Pharmaceuticals',
+//         category: 'capsule',
+//         massUnit: '1000 IU',
+//         pricePerUnit: 8.50,
+//         discount: 0,
+//         quantity: 3,
+//         stockQuantity: 200,
+//         image: 'https://via.placeholder.com/300x200?text=Vitamin+D3'
+//     }
+// ];
 
 const Checkout = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -67,17 +67,12 @@ const Checkout = () => {
     } = useForm();
 
     useEffect(() => {
-        // Simulate loading cart data from localStorage or API
-        setTimeout(() => {
-            // In real app, check if cart is empty and redirect to cart page
-            const savedCart = localStorage.getItem('cartItems');
-            if (savedCart) {
-                setCartItems(JSON.parse(savedCart));
-            } else {
-                setCartItems(mockCartItems);
-            }
-            setLoading(false);
-        }, 1000);
+        // In real app, check if cart is empty and redirect to cart page
+        const savedCart = localStorage.getItem('cartItems');
+        if (savedCart) {
+            setCartItems(JSON.parse(savedCart));
+        }
+        setLoading(false);
     }, []);
 
     // Calculate discounted price
