@@ -10,90 +10,52 @@ import {
     FaCalendarAlt
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '../../../../../hooks/useAuth';
+import axiosInstance from '../../../../../api/axiosInstance';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const PaymentHistory = () => {
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [dateFilter, setDateFilter] = useState('all');
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
 
-    // Mock payment data
-    const mockPayments = [
-        {
-            id: 'PAY-001',
-            orderId: 'ORD-2024-001',
-            amount: 125.50,
-            commission: 12.55,
-            netAmount: 112.95,
-            status: 'completed',
-            paymentMethod: 'Credit Card',
-            transactionId: 'TXN-789456123',
-            customerName: 'John Doe',
-            customerEmail: 'john@email.com',
-            medicines: [
-                { name: 'Paracetamol 500mg', quantity: 2, price: 25.00 },
-                { name: 'Vitamin D3', quantity: 1, price: 75.50 }
-            ],
-            createdAt: '2024-01-15T10:30:00Z',
-            completedAt: '2024-01-15T10:35:00Z'
+    // Fetch seller's payment history directly from backend
+    const { data: sellerPayments, isLoading } = useQuery({
+        queryKey: ['seller-payments', user?.email],
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/seller/payments/${user?.email}`);
+            return response.data.map(payment => ({
+                id: payment._id,
+                orderId: payment.orderId,
+                amount: payment.amount,
+                commission: payment.commission,
+                netAmount: payment.netAmount,
+                status: payment.status,
+                paymentMethod: 'Stripe',
+                transactionId: payment.paymentIntentId || 'N/A',
+                customerName: payment.customerInfo?.fullName || 'Unknown Customer',
+                customerEmail: payment.customerInfo?.email || 'Unknown Email',
+                medicines: payment.sellerItems?.map(item => ({
+                    name: item.name || item.medicineName || 'Unknown Medicine',
+                    quantity: item.quantity || 1,
+                    price: item.price || 0
+                })) || [],
+                createdAt: payment.createdAt,
+                completedAt: payment.completedAt
+            }));
         },
-        {
-            id: 'PAY-002',
-            orderId: 'ORD-2024-002',
-            amount: 89.99,
-            commission: 8.99,
-            netAmount: 81.00,
-            status: 'pending',
-            paymentMethod: 'PayPal',
-            transactionId: 'TXN-789456124',
-            customerName: 'Jane Smith',
-            customerEmail: 'jane@email.com',
-            medicines: [
-                { name: 'Ibuprofen 400mg', quantity: 3, price: 29.99 }
-            ],
-            createdAt: '2024-01-14T15:20:00Z',
-            completedAt: null
-        },
-        {
-            id: 'PAY-003',
-            orderId: 'ORD-2024-003',
-            amount: 45.00,
-            commission: 4.50,
-            netAmount: 40.50,
-            status: 'failed',
-            paymentMethod: 'Credit Card',
-            transactionId: 'TXN-789456125',
-            customerName: 'Bob Johnson',
-            customerEmail: 'bob@email.com',
-            medicines: [
-                { name: 'Cough Syrup', quantity: 1, price: 45.00 }
-            ],
-            createdAt: '2024-01-13T09:15:00Z',
-            completedAt: null
-        },
-        {
-            id: 'PAY-004',
-            orderId: 'ORD-2024-004',
-            amount: 199.99,
-            commission: 19.99,
-            netAmount: 180.00,
-            status: 'completed',
-            paymentMethod: 'Bank Transfer',
-            transactionId: 'TXN-789456126',
-            customerName: 'Alice Brown',
-            customerEmail: 'alice@email.com',
-            medicines: [
-                { name: 'Blood Pressure Monitor', quantity: 1, price: 199.99 }
-            ],
-            createdAt: '2024-01-12T14:45:00Z',
-            completedAt: '2024-01-12T14:50:00Z'
-        }
-    ];
+        enabled: !!user?.email
+    });
 
     // Filter payments based on search and filters
     const filteredPayments = useMemo(() => {
-        return mockPayments.filter(payment => {
+        if (!sellerPayments) return [];
+
+        return sellerPayments.filter(payment => {
             const matchesSearch =
                 payment.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 payment.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -109,12 +71,14 @@ const PaymentHistory = () => {
                 switch (dateFilter) {
                     case 'today':
                         return paymentDate.toDateString() === now.toDateString();
-                    case 'week':
+                    case 'week': {
                         const weekAgo = new Date(now.setDate(now.getDate() - 7));
                         return paymentDate >= weekAgo;
-                    case 'month':
+                    }
+                    case 'month': {
                         const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
                         return paymentDate >= monthAgo;
+                    }
                     default:
                         return true;
                 }
@@ -122,7 +86,7 @@ const PaymentHistory = () => {
 
             return matchesSearch && matchesStatus && matchesDate;
         });
-    }, [searchTerm, statusFilter, dateFilter]);
+    }, [sellerPayments, searchTerm, statusFilter, dateFilter]);
 
     // Calculate summary stats
     const summaryStats = useMemo(() => {
@@ -207,6 +171,11 @@ const PaymentHistory = () => {
         window.URL.revokeObjectURL(url);
         toast.success('Payment history exported successfully');
     };
+
+    // Show loading state
+    if (isLoading) {
+        return <Loading />;
+    }
 
     return (
         <div className="space-y-6">
@@ -336,7 +305,7 @@ const PaymentHistory = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {filteredPayments.map((payment) => (
+                            {filteredPayments?.map((payment) => (
                                 <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
@@ -384,9 +353,16 @@ const PaymentHistory = () => {
                     </table>
                 </div>
 
-                {filteredPayments.length === 0 && (
+                {(!filteredPayments || filteredPayments.length === 0) && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 dark:text-gray-400">No payments found matching your criteria.</p>
+                        <FaCalendarAlt className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No payment history found</h3>
+                        <p className="text-gray-500 dark:text-gray-400">
+                            {!sellerPayments || sellerPayments.length === 0
+                                ? "You haven't received any payments yet. Start selling medicines to see payment history."
+                                : "No payments found matching your search criteria."
+                            }
+                        </p>
                     </div>
                 )}
             </div>

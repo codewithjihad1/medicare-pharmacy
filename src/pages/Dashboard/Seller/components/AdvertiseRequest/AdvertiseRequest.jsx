@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     FaPlus,
     FaSearch,
@@ -15,8 +15,14 @@ import {
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import axiosInstance from '../../../../../api/axiosInstance';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../../../../../hooks/useAuth';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const AdvertiseRequest = () => {
+    const { user } = useAuth();
+    const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [showRequestModal, setShowRequestModal] = useState(false);
@@ -25,128 +31,66 @@ const AdvertiseRequest = () => {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-    // Mock advertisement requests data
-    const mockRequests = [
-        {
-            id: 'ADV-001',
-            medicineId: 'MED-001',
-            medicineName: 'Paracetamol 500mg',
-            medicineImage: 'https://via.placeholder.com/100x100?text=Med1',
-            title: 'Premium Pain Relief Solution',
-            description: 'Fast-acting paracetamol for effective pain and fever relief. Trusted by healthcare professionals worldwide.',
-            duration: 30, // days
-            budget: 500,
-            startDate: '2024-01-15',
-            endDate: '2024-02-14',
-            status: 'approved',
-            clicks: 1250,
-            impressions: 8500,
-            conversions: 45,
-            cost: 125.50,
-            submittedAt: '2024-01-10T10:30:00Z',
-            reviewedAt: '2024-01-12T14:20:00Z',
-            adminNote: 'Approved for premium placement'
-        },
-        {
-            id: 'ADV-002',
-            medicineId: 'MED-002',
-            medicineName: 'Vitamin D3 1000IU',
-            medicineImage: 'https://via.placeholder.com/100x100?text=Med2',
-            title: 'Essential Vitamin D Supplement',
-            description: 'High-quality Vitamin D3 supplements for bone health and immune system support.',
-            duration: 14,
-            budget: 200,
-            startDate: '2024-01-20',
-            endDate: '2024-02-03',
-            status: 'pending',
-            clicks: 0,
-            impressions: 0,
-            conversions: 0,
-            cost: 0,
-            submittedAt: '2024-01-18T09:15:00Z',
-            reviewedAt: null,
-            adminNote: null
-        },
-        {
-            id: 'ADV-003',
-            medicineId: 'MED-003',
-            medicineName: 'Ibuprofen 400mg',
-            medicineImage: 'https://via.placeholder.com/100x100?text=Med3',
-            title: 'Anti-inflammatory Medicine',
-            description: 'Effective ibuprofen for pain, inflammation, and fever reduction.',
-            duration: 7,
-            budget: 100,
-            startDate: '2024-01-08',
-            endDate: '2024-01-15',
-            status: 'rejected',
-            clicks: 0,
-            impressions: 0,
-            conversions: 0,
-            cost: 0,
-            submittedAt: '2024-01-05T16:45:00Z',
-            reviewedAt: '2024-01-07T11:30:00Z',
-            adminNote: 'Description needs improvement and compliance review'
-        },
-        {
-            id: 'ADV-004',
-            medicineId: 'MED-004',
-            medicineName: 'Cough Syrup 100ml',
-            medicineImage: 'https://via.placeholder.com/100x100?text=Med4',
-            title: 'Natural Cough Relief',
-            description: 'Effective cough syrup with natural ingredients for respiratory comfort.',
-            duration: 21,
-            budget: 300,
-            startDate: '2024-01-12',
-            endDate: '2024-02-02',
-            status: 'active',
-            clicks: 750,
-            impressions: 4200,
-            conversions: 28,
-            cost: 87.50,
-            submittedAt: '2024-01-08T13:20:00Z',
-            reviewedAt: '2024-01-10T10:15:00Z',
-            adminNote: 'Approved with minor content adjustments'
+    // fetch medicines using tanstack query
+    const { data: medicines, isLoading: isMedicinesLoading } = useQuery({
+        queryKey: ['medicines', user?.email],
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/medicines/${user?.email}`);
+            return response.data;
         }
-    ];
+    });
 
-    // Mock medicines for dropdown
-    const mockMedicines = [
-        { id: 'MED-001', name: 'Paracetamol 500mg', image: 'https://via.placeholder.com/100x100?text=Med1' },
-        { id: 'MED-002', name: 'Vitamin D3 1000IU', image: 'https://via.placeholder.com/100x100?text=Med2' },
-        { id: 'MED-003', name: 'Ibuprofen 400mg', image: 'https://via.placeholder.com/100x100?text=Med3' },
-        { id: 'MED-004', name: 'Cough Syrup 100ml', image: 'https://via.placeholder.com/100x100?text=Med4' },
-        { id: 'MED-005', name: 'Multivitamin Tablets', image: 'https://via.placeholder.com/100x100?text=Med5' }
-    ];
+    // fetch advertisement requests using tanstack query
+    const { data: advertiseRequests, isLoading: isAdvertiseLoading } = useQuery({
+        queryKey: ['advertise-requests', user?.email],
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/advertise-requests/${user?.email}`);
+            return response.data;
+        }
+    });
 
     // Filter requests based on search and filters
     const filteredRequests = useMemo(() => {
-        return mockRequests.filter(request => {
+        if (!advertiseRequests) return [];
+
+        return advertiseRequests.filter(request => {
             const matchesSearch =
-                request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                request.medicineName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                request.id.toLowerCase().includes(searchTerm.toLowerCase());
+                request.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                request.medicineName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                request._id?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
 
             return matchesSearch && matchesStatus;
         });
-    }, [searchTerm, statusFilter]);
+    }, [advertiseRequests, searchTerm, statusFilter]);
 
     // Calculate summary stats
     const summaryStats = useMemo(() => {
-        const active = mockRequests.filter(r => r.status === 'active');
-        const pending = mockRequests.filter(r => r.status === 'pending');
-        const approved = mockRequests.filter(r => r.status === 'approved');
+        if (!advertiseRequests) return {
+            totalRequests: 0,
+            activeAds: 0,
+            pendingRequests: 0,
+            approvedRequests: 0,
+            totalSpent: 0,
+            totalClicks: 0,
+            totalConversions: 0
+        };
+
+        const active = advertiseRequests.filter(r => r.status === 'active');
+        const pending = advertiseRequests.filter(r => r.status === 'pending');
+        const approved = advertiseRequests.filter(r => r.status === 'approved');
 
         return {
-            totalRequests: mockRequests.length,
+            totalRequests: advertiseRequests.length,
             activeAds: active.length,
             pendingRequests: pending.length,
-            totalSpent: mockRequests.reduce((sum, r) => sum + r.cost, 0),
-            totalClicks: mockRequests.reduce((sum, r) => sum + r.clicks, 0),
-            totalConversions: mockRequests.reduce((sum, r) => sum + r.conversions, 0)
+            approvedRequests: approved.length,
+            totalSpent: advertiseRequests.reduce((sum, r) => sum + (r.cost || 0), 0),
+            totalClicks: advertiseRequests.reduce((sum, r) => sum + (r.clicks || 0), 0),
+            totalConversions: advertiseRequests.reduce((sum, r) => sum + (r.conversions || 0), 0)
         };
-    }, []);
+    }, [advertiseRequests]);
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -207,23 +151,61 @@ const AdvertiseRequest = () => {
         setShowRequestModal(true);
     };
 
-    const handleDeleteRequest = (requestId) => {
+    const handleDeleteRequest = async (requestId) => {
         if (window.confirm('Are you sure you want to delete this advertisement request?')) {
-            toast.success('Advertisement request deleted successfully');
-            // Here you would make an API call to delete the request
+            try {
+                await axiosInstance.delete(`/advertise-requests/${requestId}`);
+                toast.success('Advertisement request deleted successfully');
+                // Invalidate and refetch the advertise requests
+                queryClient.invalidateQueries(['advertise-requests', user?.email]);
+            } catch (error) {
+                console.error('Error deleting request:', error);
+                toast.error('Failed to delete request');
+            }
         }
     };
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         try {
+            const selectedMedicine = medicines?.find(med => med._id === data.medicineId);
+
+            const requestData = {
+                medicineId: data.medicineId,
+                medicineName: selectedMedicine?.name || '',
+                medicineImage: selectedMedicine?.image || '',
+                title: data.title,
+                description: data.description,
+                duration: parseInt(data.duration),
+                budget: parseFloat(data.budget),
+                startDate: data.startDate,
+                endDate: calculateEndDate(data.startDate, data.duration),
+                status: 'pending',
+                clicks: 0,
+                impressions: 0,
+                conversions: 0,
+                cost: 0,
+                sellerEmail: user?.email,
+                sellerName: user?.displayName || 'Unknown Seller',
+                submittedAt: new Date().toISOString(),
+                reviewedAt: null,
+                adminNote: null
+            };
+
             if (editMode) {
+                await axiosInstance.put(`/advertise-requests/${selectedRequest._id}`, requestData);
                 toast.success('Advertisement request updated successfully');
             } else {
+                await axiosInstance.post('/advertise-requests', requestData);
                 toast.success('Advertisement request submitted successfully');
             }
+
+            // Invalidate and refetch the advertise requests
+            queryClient.invalidateQueries(['advertise-requests', user?.email]);
+
             setShowRequestModal(false);
             reset();
         } catch (error) {
+            console.error('Error submitting request:', error);
             toast.error('Failed to submit request');
         }
     };
@@ -235,6 +217,12 @@ const AdvertiseRequest = () => {
         end.setDate(start.getDate() + parseInt(duration));
         return end.toISOString().split('T')[0];
     };
+
+
+    // data is loading
+    if (isMedicinesLoading || isAdvertiseLoading) {
+        return <Loading />;
+    }
 
     return (
         <div className="space-y-6">
@@ -351,12 +339,12 @@ const AdvertiseRequest = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {filteredRequests.map((request) => (
-                                <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            {filteredRequests?.map((request) => (
+                                <tr key={request._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4">
                                         <div className="flex items-start space-x-3">
                                             <img
-                                                src={request.medicineImage}
+                                                src={request.medicineImage || 'https://via.placeholder.com/64x64?text=Med'}
                                                 alt={request.medicineName}
                                                 className="w-16 h-16 rounded-lg object-cover"
                                             />
@@ -378,17 +366,17 @@ const AdvertiseRequest = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm text-gray-900 dark:text-white">{request.clicks.toLocaleString()} clicks</p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">{request.impressions.toLocaleString()} impressions</p>
-                                            <p className="text-xs text-green-600 dark:text-green-400">{request.conversions} conversions</p>
-                                            <p className="text-xs text-red-500 dark:text-red-400">${request.cost.toFixed(2)} spent</p>
+                                            <p className="text-sm text-gray-900 dark:text-white">{(request.clicks || 0).toLocaleString()} clicks</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{(request.impressions || 0).toLocaleString()} impressions</p>
+                                            <p className="text-xs text-green-600 dark:text-green-400">{request.conversions || 0} conversions</p>
+                                            <p className="text-xs text-red-500 dark:text-red-400">${(request.cost || 0).toFixed(2)} spent</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center space-x-2">
                                             {getStatusIcon(request.status)}
                                             <span className={getStatusBadge(request.status)}>
-                                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                                {request.status?.charAt(0).toUpperCase() + request.status?.slice(1)}
                                             </span>
                                         </div>
                                         {request.adminNote && (
@@ -407,7 +395,7 @@ const AdvertiseRequest = () => {
                                                 <FaEdit />
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteRequest(request.id)}
+                                                onClick={() => handleDeleteRequest(request._id)}
                                                 className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                                                 disabled={request.status === 'active'}
                                             >
@@ -421,7 +409,7 @@ const AdvertiseRequest = () => {
                     </table>
                 </div>
 
-                {filteredRequests.length === 0 && (
+                {(!filteredRequests || filteredRequests.length === 0) && (
                     <div className="text-center py-12">
                         <FaBullhorn className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No advertisement requests found</h3>
@@ -465,8 +453,8 @@ const AdvertiseRequest = () => {
                                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Choose a medicine...</option>
-                                        {mockMedicines.map(medicine => (
-                                            <option key={medicine.id} value={medicine.id}>
+                                        {medicines?.map(medicine => (
+                                            <option key={medicine._id} value={medicine._id}>
                                                 {medicine.name}
                                             </option>
                                         ))}

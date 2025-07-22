@@ -11,8 +11,8 @@ const AddOrEditMedicine = ({ medicine, onClose, register, handleSubmit, errors, 
             return response.data;
         }
     });
-    console.log("🚀 ~ AddOrEditMedicine ~ companies:", companies)
 
+    // when data isLoading
     if (isCompaniesLoading) {
         return <Loading />;
     }

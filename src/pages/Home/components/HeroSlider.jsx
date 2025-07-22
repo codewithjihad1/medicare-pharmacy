@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { FaArrowLeft, FaArrowRight, FaShoppingCart, FaEye } from 'react-icons/fa';
@@ -11,35 +10,26 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import BannerLoading from '../../../components/ui/Loading/BannerLoading';
 import axiosInstance from '../../../api/axiosInstance';
+import addToCart from '../../../utils/addToCart';
+import { useQuery } from '@tanstack/react-query';
 
 const HeroSlider = () => {
-    const [bannerAds, setBannerAds] = useState([]);
-    const [loading, setLoading] = useState(true);
     const { theme } = useTheme();
 
-    useEffect(() => {
-        const fetchBannerAds = async () => {
-            try {
-                setLoading(true);
-                const response = await axiosInstance.get('/medicines/banner');
-                setBannerAds(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching banner ads:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchBannerAds();
-    }, []);
+    const { data: bannerAds, isLoading } = useQuery({
+        queryKey: ['bannerAds'],
+        queryFn: async () => {
+            const response = await axiosInstance.get('/medicines/banner');
+            return response.data;
+        }
+    });
 
     const calculateDiscountedPrice = (price, discount) => {
         return (price - (price * discount / 100)).toFixed(2);
     };
 
     const handleAddToCart = (medicine) => {
-        // TODO: Implement add to cart functionality
-        console.log('Adding to cart:', medicine);
+        return addToCart(medicine);
     };
 
     const handleViewDetails = (medicine) => {
@@ -47,7 +37,7 @@ const HeroSlider = () => {
         console.log('View details:', medicine);
     };
 
-    if (loading) {
+    if (isLoading) {
         return <BannerLoading />;
     }
 

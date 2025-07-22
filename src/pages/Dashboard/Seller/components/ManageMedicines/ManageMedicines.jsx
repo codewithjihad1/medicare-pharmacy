@@ -8,6 +8,7 @@ import axiosInstance from '../../../../../api/axiosInstance';
 import { useAuth } from '../../../../../hooks/useAuth';
 import AddOrEditMedicine from './AddOrEditMedicine';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const ManageMedicines = () => {
     const { user } = useAuth();
@@ -80,10 +81,6 @@ const ManageMedicines = () => {
 
         setFilteredMedicines(filtered);
     }, [medicines, searchTerm, categoryFilter, statusFilter]);
-
-    // Handle form submission (add/edit medicine)
-    // Add & update medicine using TanStack Query mutations
-
 
 
     // Mutation for adding medicine
@@ -166,24 +163,33 @@ const ManageMedicines = () => {
         setValue('category', medicine.category);
         setValue('company', medicine.company);
         setValue('massUnit', medicine.massUnit);
-        setValue('price', medicine.pricePerUnit); // updated field
+        setValue('pricePerUnit', medicine.pricePerUnit);
         setValue('discount', medicine.discount);
-        setValue('stock', medicine.stockQuantity); // updated field
+        setValue('stockQuantity', medicine.stockQuantity);
         setIsModalOpen(true);
     };
 
     // Handle delete medicine
+    const deleteMedicineMutation = useMutation({
+        mutationFn: async (medicineId) => {
+            const response = await axiosInstance.delete(`/medicines/${medicineId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['medicines'] });
+            toast.success('Medicine deleted successfully');
+        },
+        onError: () => {
+            toast.error('Failed to delete medicine');
+        }
+    });
+
     const handleDeleteMedicine = async (medicineId) => {
         if (window.confirm('Are you sure you want to delete this medicine? This action cannot be undone.')) {
             try {
-                setMedicines(prevMedicines =>
-                    prevMedicines.filter(med => med._id !== medicineId)
-                );
-                await axiosInstance.delete(`/medicines/${medicineId}`);
-                toast.success('Medicine deleted successfully');
+                await deleteMedicineMutation.mutateAsync(medicineId);
             } catch (error) {
-                console.error('Error deleting medicine:', error);
-                toast.error('Failed to delete medicine');
+                toast.error(error.response?.data?.message || 'Failed to delete medicine');
             }
         }
     };
@@ -211,6 +217,11 @@ const ManageMedicines = () => {
     };
 
     const stats = getMedicineStats();
+
+    // when data isLoading
+    if (isMedicinesLoading || isCategoriesLoading) {
+        return <Loading />;
+    }
 
     return (
         <div className="space-y-6">
