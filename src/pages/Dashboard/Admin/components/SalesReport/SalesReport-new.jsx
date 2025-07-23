@@ -33,7 +33,7 @@ const SalesReport = () => {
                 params.append('endDate', endDate.toISOString());
             }
 
-            const response = await axiosSecure.get(`/admin/sales-report?${params}`);
+            const response = await axiosSecure.get(`/api/admin/sales-report?${params}`);
             return response.data;
         },
         keepPreviousData: true,
@@ -46,7 +46,7 @@ const SalesReport = () => {
     } = useQuery({
         queryKey: ['admin-sales-stats'],
         queryFn: async () => {
-            const response = await axiosSecure.get('/admin/sales-stats?period=month');
+            const response = await axiosSecure.get('/api/admin/sales-stats?period=month');
             return response.data;
         },
     });
@@ -105,7 +105,7 @@ const SalesReport = () => {
     };
 
     // Get statistics from current data or fallback to general stats
-    const currentStats = salesStats || {
+    const currentStats = salesReportData?.stats || salesStats || {
         totalRevenue: 0,
         totalOrders: 0,
         totalQuantity: 0,
@@ -240,10 +240,10 @@ const SalesReport = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                )}
             )}
-        </div>
-    );
+                </div>
+            );
 };
 
-export default SalesReport;
+            export default SalesReport;

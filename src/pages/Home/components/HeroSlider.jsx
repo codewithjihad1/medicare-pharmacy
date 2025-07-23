@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
-import { FaArrowLeft, FaArrowRight, FaShoppingCart, FaEye } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaEye } from 'react-icons/fa';
 import useTheme from '../../../hooks/useTheme';
 
 // Import Swiper styles
@@ -10,7 +10,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import BannerLoading from '../../../components/ui/Loading/BannerLoading';
 import axiosInstance from '../../../api/axiosInstance';
-import addToCart from '../../../utils/addToCart';
 import { useQuery } from '@tanstack/react-query';
 
 const HeroSlider = () => {
@@ -19,22 +18,16 @@ const HeroSlider = () => {
     const { data: bannerAds, isLoading } = useQuery({
         queryKey: ['bannerAds'],
         queryFn: async () => {
-            const response = await axiosInstance.get('/medicines/banner');
+            const response = await axiosInstance.get('/advertise-requests/active/slider');
             return response.data;
-        }
+        },
+        // staleTime: 5 * 60 * 1000, // 5 minutes
     });
+    console.log("🚀 ~ HeroSlider ~ bannerAds:", bannerAds)
 
-    const calculateDiscountedPrice = (price, discount) => {
-        return (price - (price * discount / 100)).toFixed(2);
-    };
-
-    const handleAddToCart = (medicine) => {
-        return addToCart(medicine);
-    };
-
-    const handleViewDetails = (medicine) => {
-        // TODO: Implement view details modal or navigation
-        console.log('View details:', medicine);
+    const handleViewDetails = (advertisement) => {
+        // TODO: Implement view details modal or navigation to medicine details
+        console.log('View advertisement details:', advertisement);
     };
 
     if (isLoading) {
@@ -95,7 +88,7 @@ const HeroSlider = () => {
                             <div
                                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                                 style={{
-                                    backgroundImage: `url(${ad.image})`,
+                                    backgroundImage: `url(${ad.medicineImage})`,
                                 }}
                             >
                                 {/* Dynamic overlay based on theme */}
@@ -118,10 +111,10 @@ const HeroSlider = () => {
                                                         ? 'text-sm font-medium uppercase tracking-wide text-blue-400'
                                                         : 'text-sm font-medium uppercase tracking-wide text-blue-300'
                                                 }>
-                                                    {ad.category} • {ad.company}
+                                                    Featured Advertisement • {ad.sellerName}
                                                 </p>
                                                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight text-white">
-                                                    {ad.name}
+                                                    {ad.medicineName}
                                                 </h1>
                                             </div>
 
@@ -130,104 +123,100 @@ const HeroSlider = () => {
                                                     ? 'text-lg lg:text-xl max-w-lg leading-relaxed text-gray-100'
                                                     : 'text-lg lg:text-xl max-w-lg leading-relaxed text-gray-200'
                                             }>
-                                                {ad.description}
+                                                {ad.title}
                                             </p>
 
-                                            {/* Price Section */}
+                                            <div className={
+                                                theme === 'dark'
+                                                    ? 'text-md max-w-lg leading-relaxed text-gray-200'
+                                                    : 'text-md max-w-lg leading-relaxed text-gray-300'
+                                            }>
+                                                {ad.description}
+                                            </div>
+
+                                            {/* Advertisement Info */}
                                             <div className="flex items-center space-x-4">
                                                 <div className="flex items-center space-x-2">
                                                     <span className={
                                                         theme === 'dark'
-                                                            ? 'text-3xl font-bold text-green-300'
-                                                            : 'text-3xl font-bold text-green-400'
+                                                            ? 'text-2xl font-bold text-green-300'
+                                                            : 'text-2xl font-bold text-green-400'
                                                     }>
-                                                        ${calculateDiscountedPrice(ad.pricePerUnit, ad.discount)}
+                                                        Budget: ${ad.budget?.toFixed(2)}
                                                     </span>
-                                                    {ad.discount > 0 && (
-                                                        <>
-                                                            <span className={
-                                                                theme === 'dark'
-                                                                    ? 'text-lg line-through text-gray-300'
-                                                                    : 'text-lg line-through text-gray-400'
-                                                            }>
-                                                                ${ad.price}
-                                                            </span>
-                                                            <span className={
-                                                                theme === 'dark'
-                                                                    ? 'px-2 py-1 rounded-full text-sm font-medium bg-red-600 text-white'
-                                                                    : 'px-2 py-1 rounded-full text-sm font-medium bg-red-500 text-white'
-                                                            }>
-                                                                -{ad.discount}%
-                                                            </span>
-                                                        </>
-                                                    )}
+                                                </div>
+                                                <div className="flex items-center space-x-2 text-sm">
+                                                    <span className={
+                                                        theme === 'dark'
+                                                            ? 'px-3 py-1 bg-orange-600/30 text-orange-300 rounded-full border border-orange-500/30'
+                                                            : 'px-3 py-1 bg-orange-500/30 text-orange-200 rounded-full border border-orange-400/30'
+                                                    }>
+                                                        {ad.duration} days campaign
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             {/* Action Buttons */}
                                             <div className="flex flex-col sm:flex-row gap-4">
                                                 <button
-                                                    onClick={() => handleAddToCart(ad)}
+                                                    onClick={() => handleViewDetails(ad)}
                                                     className={
                                                         theme === 'dark'
                                                             ? 'flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200 bg-blue-700 hover:bg-blue-800 text-white'
                                                             : 'flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white'
                                                     }
                                                 >
-                                                    <FaShoppingCart className="w-5 h-5" />
-                                                    <span>Add to Cart</span>
+                                                    <FaEye className="w-5 h-5" />
+                                                    <span>View Medicine</span>
                                                 </button>
                                                 <button
-                                                    onClick={() => handleViewDetails(ad)}
                                                     className={
                                                         theme === 'dark'
                                                             ? 'flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200 bg-transparent border-2 border-gray-300 text-gray-300 hover:bg-gray-300 hover:text-gray-900'
                                                             : 'flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200 bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900'
                                                     }
                                                 >
-                                                    <FaEye className="w-5 h-5" />
-                                                    <span>View Details</span>
+                                                    <span>Learn More</span>
                                                 </button>
                                             </div>
 
-                                            {/* Seller Info */}
-                                            <div className={
-                                                theme === 'dark'
-                                                    ? 'pt-4 border-t border-gray-500'
-                                                    : 'pt-4 border-t border-gray-600'
-                                            }>
-                                                <p className={
-                                                    theme === 'dark'
-                                                        ? 'text-sm text-gray-200'
-                                                        : 'text-sm text-gray-300'
-                                                }>
-                                                    Sold by: <span className="text-white font-medium">{ad.company}</span>
-                                                </p>
+                                            {/* Stats */}
+                                            <div className="flex items-center space-x-6 text-sm">
+                                                <div className="flex items-center space-x-1">
+                                                    <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-200'}>
+                                                        👁 {ad.impressions || 0} views
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-200'}>
+                                                        👆 {ad.clicks || 0} clicks
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 
                                         {/* Product Image */}
-                                        <div className="hidden lg:block">
-                                            <div className="relative">
-                                                <div className={
-                                                    theme === 'dark'
-                                                        ? 'rounded-2xl p-8 bg-gray-800/80 backdrop-blur-sm'
-                                                        : 'rounded-2xl p-8 bg-white/10 backdrop-blur-sm'
-                                                }>
-                                                    <img
-                                                        src={ad.image}
-                                                        alt={ad.name}
-                                                        className="w-full h-80 object-cover rounded-xl shadow-2xl"
-                                                    />
-                                                    {ad.discount > 0 && (
-                                                        <div className={
-                                                            theme === 'dark'
-                                                                ? 'absolute top-4 right-4 px-4 py-2 rounded-full font-bold text-lg bg-red-600 text-white'
-                                                                : 'absolute top-4 right-4 px-4 py-2 rounded-full font-bold text-lg bg-red-500 text-white'
-                                                        }>
-                                                            SAVE {ad.discount}%
-                                                        </div>
-                                                    )}
+                                        <div className="relative">
+                                            <div className={
+                                                theme === 'dark'
+                                                    ? 'relative bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm rounded-3xl p-8 border border-gray-700/50'
+                                                    : 'relative bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/20'
+                                            }>
+                                                <img
+                                                    src={ad.medicineImage}
+                                                    alt={ad.medicineName}
+                                                    className="w-full h-64 lg:h-80 object-contain drop-shadow-2xl"
+                                                />
+
+                                                {/* Advertisement Badge */}
+                                                <div className="absolute top-4 right-4">
+                                                    <span className={
+                                                        theme === 'dark'
+                                                            ? 'px-3 py-1 bg-blue-600/80 text-blue-100 rounded-full text-xs font-medium border border-blue-500/50'
+                                                            : 'px-3 py-1 bg-blue-500/80 text-white rounded-full text-xs font-medium border border-blue-400/50'
+                                                    }>
+                                                        Sponsored
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -257,34 +246,6 @@ const HeroSlider = () => {
             }>
                 <FaArrowRight className="w-6 h-6" />
             </div>
-
-            {/* Custom Pagination Styles */}
-            <style jsx global>{`
-                .swiper-pagination-bullet-custom {
-                    width: 12px !important;
-                    height: 12px !important;
-                    background: ${theme === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.5)'} !important;
-                    border-radius: 50% !important;
-                    margin: 0 4px !important;
-                    cursor: pointer !important;
-                    transition: all 0.3s ease !important;
-                    opacity: 1 !important;
-                }
-                .swiper-pagination-bullet-active-custom {
-                    background: ${theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'white'} !important;
-                    transform: scale(1.2) !important;
-                }
-                
-                /* Fix Swiper default styles override */
-                .swiper-pagination {
-                    position: absolute !important;
-                    bottom: 20px !important;
-                    left: 50% !important;
-                    transform: translateX(-50%) !important;
-                    width: auto !important;
-                    height: auto !important;
-                }
-            `}</style>
         </section>
     );
 };
