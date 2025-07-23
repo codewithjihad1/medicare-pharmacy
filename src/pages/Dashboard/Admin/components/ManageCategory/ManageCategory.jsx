@@ -3,63 +3,79 @@ import { FaPlus, FaSearch, FaTags } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import CategoryTable from './CategoryTable';
-
-// Mock categories data
-const mockCategories = [
-    {
-        id: 1,
-        name: 'Tablets',
-        slug: 'tablets',
-        description: 'Oral solid dosage forms including coated and uncoated tablets',
-        image: 'https://via.placeholder.com/100x100?text=Tablets',
-        productCount: 245,
-        createdAt: '2024-01-15T10:30:00Z'
-    },
-    {
-        id: 2,
-        name: 'Capsules',
-        slug: 'capsules',
-        description: 'Hard and soft capsules for oral administration',
-        image: 'https://via.placeholder.com/100x100?text=Capsules',
-        productCount: 156,
-        createdAt: '2024-01-20T14:45:00Z'
-    },
-    {
-        id: 3,
-        name: 'Syrups',
-        slug: 'syrups',
-        description: 'Liquid preparations for oral administration',
-        image: 'https://via.placeholder.com/100x100?text=Syrups',
-        productCount: 89,
-        createdAt: '2024-02-01T09:15:00Z'
-    },
-    {
-        id: 4,
-        name: 'Injections',
-        slug: 'injections',
-        description: 'Injectable preparations for parenteral administration',
-        image: 'https://via.placeholder.com/100x100?text=Injections',
-        productCount: 67,
-        createdAt: '2024-02-10T16:20:00Z'
-    },
-    {
-        id: 5,
-        name: 'Creams & Ointments',
-        slug: 'creams-ointments',
-        description: 'Topical preparations for external application',
-        image: 'https://via.placeholder.com/100x100?text=Creams',
-        productCount: 134,
-        createdAt: '2024-02-15T11:30:00Z'
-    }
-];
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAxiosSecure from '../../../../../hooks/useAxiosSecure';
 
 const ManageCategory = () => {
-    const [categories, setCategories] = useState([]);
     const [filteredCategories, setFilteredCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
+    const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient();
+
+    // fetch categories
+    const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await axiosSecure.get('/categories');
+            return response.data;
+        }
+    });
+
+    // Add category mutation
+    const addCategoryMutation = useMutation({
+        mutationFn: async (categoryData) => {
+            const response = await axiosSecure.post('/categories', categoryData);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category added successfully');
+            setIsModalOpen(false);
+            setEditingCategory(null);
+            reset();
+        },
+        onError: (error) => {
+            console.error('Error adding category:', error);
+            toast.error(error.response?.data?.message || 'Failed to add category');
+        }
+    });
+
+    // Edit category mutation
+    const editCategoryMutation = useMutation({
+        mutationFn: async ({ id, categoryData }) => {
+            const response = await axiosSecure.put(`/categories/${id}`, categoryData);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category updated successfully');
+            setIsModalOpen(false);
+            setEditingCategory(null);
+            reset();
+        },
+        onError: (error) => {
+            console.error('Error updating category:', error);
+            toast.error(error.response?.data?.message || 'Failed to update category');
+        }
+    });
+
+    // Delete category mutation
+    const deleteCategoryMutation = useMutation({
+        mutationFn: async (categoryId) => {
+            const response = await axiosSecure.delete(`/categories/${categoryId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category deleted successfully');
+        },
+        onError: (error) => {
+            console.error('Error deleting category:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete category');
+        }
+    });
 
     const {
         register,
@@ -70,13 +86,10 @@ const ManageCategory = () => {
     } = useForm();
 
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setCategories(mockCategories);
-            setFilteredCategories(mockCategories);
-            setLoading(false);
-        }, 1000);
-    }, []);
+        if (categories) {
+            setFilteredCategories(categories);
+        }
+    }, [categories]);
 
     // Filter categories based on search term
     useEffect(() => {
@@ -94,35 +107,23 @@ const ManageCategory = () => {
     // Handle form submission (add/edit category)
     const onSubmit = async (data) => {
         try {
-            if (editingCategory) {
-                // Update existing category
-                setCategories(prevCategories =>
-                    prevCategories.map(cat =>
-                        cat.id === editingCategory.id
-                            ? { ...cat, ...data, slug: data.name.toLowerCase().replace(/\s+/g, '-') }
-                            : cat
-                    )
-                );
-                toast.success('Category updated successfully');
-            } else {
-                // Add new category
-                const newCategory = {
-                    id: Date.now(),
-                    ...data,
-                    slug: data.name.toLowerCase().replace(/\s+/g, '-'),
-                    productCount: 0,
-                    createdAt: new Date().toISOString()
-                };
-                setCategories(prevCategories => [...prevCategories, newCategory]);
-                toast.success('Category added successfully');
-            }
+            const categoryData = {
+                ...data,
+                slug: data.name.toLowerCase().replace(/\s+/g, '-'),
+                medicineCount: editingCategory?.medicineCount || 0,
+                createdAt: editingCategory?.createdAt || new Date().toISOString()
+            };
 
-            setIsModalOpen(false);
-            setEditingCategory(null);
-            reset();
+            if (editingCategory) {
+                editCategoryMutation.mutate({
+                    id: editingCategory._id,
+                    categoryData
+                });
+            } else {
+                addCategoryMutation.mutate(categoryData);
+            }
         } catch (error) {
-            console.error('Error saving category:', error);
-            toast.error('Failed to save category');
+            console.error('Error in form submission:', error);
         }
     };
 
@@ -138,15 +139,7 @@ const ManageCategory = () => {
     // Handle delete category
     const handleDeleteCategory = async (categoryId) => {
         if (window.confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
-            try {
-                setCategories(prevCategories =>
-                    prevCategories.filter(cat => cat.id !== categoryId)
-                );
-                toast.success('Category deleted successfully');
-            } catch (error) {
-                console.error('Error deleting category:', error);
-                toast.error('Failed to delete category');
-            }
+            deleteCategoryMutation.mutate(categoryId);
         }
     };
 
@@ -185,20 +178,8 @@ const ManageCategory = () => {
                         <FaTags className="h-8 w-8 text-blue-500" />
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Categories</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{categories.length}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <div className="flex items-center">
-                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <span className="text-green-600 font-bold text-sm">P</span>
-                        </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                {categories.reduce((sum, cat) => sum + cat.productCount, 0)}
+                                {isCategoriesLoading ? '...' : categories.length}
                             </p>
                         </div>
                     </div>
@@ -206,13 +187,31 @@ const ManageCategory = () => {
 
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                     <div className="flex items-center">
-                        <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
-                            <span className="text-purple-600 font-bold text-sm">A</span>
+                        <div className="h-8 w-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                            <span className="text-green-600 dark:text-green-300 font-bold text-sm">P</span>
+                        </div>
+                        <div className="ml-4">
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                {isCategoriesLoading ? '...' : categories.reduce((sum, cat) => sum + (cat.medicineCount || 0), 0)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <div className="flex items-center">
+                        <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
+                            <span className="text-purple-600 dark:text-purple-300 font-bold text-sm">A</span>
                         </div>
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Products/Category</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                {categories.length > 0 ? Math.round(categories.reduce((sum, cat) => sum + cat.productCount, 0) / categories.length) : 0}
+                                {isCategoriesLoading ? '...' :
+                                    categories.length > 0
+                                        ? Math.round(categories.reduce((sum, cat) => sum + (cat.medicineCount || 0), 0) / categories.length)
+                                        : 0
+                                }
                             </p>
                         </div>
                     </div>
@@ -244,7 +243,7 @@ const ManageCategory = () => {
                     categories={filteredCategories}
                     onEditCategory={handleEditCategory}
                     onDeleteCategory={handleDeleteCategory}
-                    loading={loading}
+                    loading={isCategoriesLoading}
                 />
             </div>
 
@@ -304,15 +303,24 @@ const ManageCategory = () => {
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                                    disabled={addCategoryMutation.isPending || editCategoryMutation.isPending}
+                                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                    disabled={addCategoryMutation.isPending || editCategoryMutation.isPending}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                                 >
-                                    {editingCategory ? 'Update' : 'Add'} Category
+                                    {(addCategoryMutation.isPending || editCategoryMutation.isPending) && (
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    )}
+                                    <span>
+                                        {(addCategoryMutation.isPending || editCategoryMutation.isPending)
+                                            ? (editingCategory ? 'Updating...' : 'Adding...')
+                                            : (editingCategory ? 'Update' : 'Add')} Category
+                                    </span>
                                 </button>
                             </div>
                         </form>

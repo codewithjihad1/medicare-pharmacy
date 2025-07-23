@@ -304,7 +304,7 @@ const PaymentHistory = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
                                             <p className="text-sm font-medium text-gray-900 dark:text-white">OrderId: {payment?.id?.slice(-6).toUpperCase()}</p>
-                                            <p className="text-xs text-gray-400 dark:text-gray-500">{payment.transactionId}</p>
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">TrxId: {payment.transactionId}</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">

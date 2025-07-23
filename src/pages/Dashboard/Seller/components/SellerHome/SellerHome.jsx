@@ -182,7 +182,7 @@ const SellerHome = () => {
                     Monthly Revenue Trend
                 </h3>
                 <div className="grid grid-cols-6 gap-4">
-                    {sellerStats.monthlyRevenue.map((month, index) => (
+                    {sellerStats?.monthlyRevenue.map((month, index) => (
                         <div key={index} className="text-center">
                             <div className="bg-blue-100 dark:bg-blue-900 rounded-lg p-4 mb-2">
                                 <div

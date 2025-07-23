@@ -1,12 +1,19 @@
-import { FaUser, FaShoppingCart, FaHeart, FaCog } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaHome, FaCreditCard, FaUser } from 'react-icons/fa';
 import Loading from '../../../components/ui/Loading/Loading';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useAuth } from '../../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 
+// Import components
+import UserHome from './components/UserHome/UserHome';
+import UserPaymentHistory from './components/UserPaymentHistory/UserPaymentHistory';
+import UpdateProfile from './components/UpdateProfile/UpdateProfile';
+
 const UserDashboard = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const [activeTab, setActiveTab] = useState('home');
 
     // get user statistics
     const { data: userStats, isLoading } = useQuery({
@@ -22,134 +29,54 @@ const UserDashboard = () => {
         return <Loading />;
     }
 
+    const tabs = [
+        { id: 'home', label: 'Dashboard', icon: FaHome },
+        { id: 'payment-history', label: 'Payment History', icon: FaCreditCard },
+        { id: 'profile', label: 'Update Profile', icon: FaUser },
+    ];
+
+    const renderActiveComponent = () => {
+        switch (activeTab) {
+            case 'home':
+                return <UserHome userStats={userStats} user={user} />;
+            case 'payment-history':
+                return <UserPaymentHistory />;
+            case 'profile':
+                return <UpdateProfile user={user} />;
+            default:
+                return <UserHome userStats={userStats} user={user} />;
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Welcome Section */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-6 mb-8">
-                    <h1 className="text-3xl font-bold mb-2">
-                        Welcome back, {user?.displayName || 'User'}!
-                    </h1>
-                    <p className="text-blue-100">
-                        Manage your account and track your orders
-                    </p>
-                </div>
-
-                {/* Dashboard Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <FaShoppingCart className="h-8 w-8 text-blue-500" />
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{userStats?.totalOrders || 0}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <FaHeart className="h-8 w-8 text-red-500" />
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Wishlist Items</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{userStats?.wishlistItems || 0}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                                <span className="text-green-600 font-bold">$</span>
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spent</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">${userStats?.totalSpent || 0}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div className="flex items-center">
-                            <FaCog className="h-8 w-8 text-gray-500" />
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Account Type</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white capitalize">
-                                    {userStats?.accountType || 'User'}
-                                </p>
-                            </div>
-                        </div>
+                {/* Tab Navigation */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+                    <div className="border-b border-gray-200 dark:border-gray-700">
+                        <nav className="flex space-x-8 px-6" aria-label="Tabs">
+                            {tabs.map((tab) => {
+                                const Icon = tab.icon;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`${activeTab === tab.id
+                                                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        <span>{tab.label}</span>
+                                    </button>
+                                );
+                            })}
+                        </nav>
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            Recent Orders
-                        </h3>
-                        <div className="space-y-4">
-                            {userStats?.recentOrders && userStats.recentOrders.length > 0 ? (
-                                userStats.recentOrders.map((order) => (
-                                    <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <div>
-                                            <p className="font-medium text-gray-900 dark:text-white">Order #{order.orderId}</p>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                {order.itemCount} {order.itemCount === 1 ? 'item' : 'items'} • ${order.total.toFixed(2)}
-                                            </p>
-                                        </div>
-                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${order.status === 'Delivered'
-                                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                                            }`}>
-                                            {order.status}
-                                        </span>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-8">
-                                    <FaShoppingCart className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
-                                    <p className="text-gray-500 dark:text-gray-400">No orders yet</p>
-                                    <p className="text-sm text-gray-400 dark:text-gray-500">Start shopping to see your orders here</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            Profile Information
-                        </h3>
-                        <div className="space-y-3">
-                            <div className="flex items-center">
-                                {user?.photoURL ? (
-                                    <img
-                                        src={user.photoURL}
-                                        alt={user.displayName}
-                                        className="h-12 w-12 rounded-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="h-12 w-12 bg-gray-300 rounded-full flex items-center justify-center">
-                                        <FaUser className="h-6 w-6 text-gray-600" />
-                                    </div>
-                                )}
-                                <div className="ml-4">
-                                    <p className="font-medium text-gray-900 dark:text-white">
-                                        {user?.displayName || 'User Name'}
-                                    </p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        {user?.email}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="pt-4">
-                                <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                                    Update Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {/* Active Component */}
+                {renderActiveComponent()}
             </div>
         </div>
     );

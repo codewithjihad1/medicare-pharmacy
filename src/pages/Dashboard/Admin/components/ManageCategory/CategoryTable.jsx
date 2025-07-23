@@ -1,13 +1,10 @@
 import React from 'react';
 import { FaEdit, FaTrash, FaPills } from 'react-icons/fa';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const CategoryTable = ({ categories, onEditCategory, onDeleteCategory, loading }) => {
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (
@@ -61,7 +58,7 @@ const CategoryTable = ({ categories, onEditCategory, onDeleteCategory, loading }
                                 <div className="flex items-center">
                                     <FaPills className="h-4 w-4 text-blue-500 mr-2" />
                                     <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                        {category.productCount}
+                                        {category.medicineCount || category.productCount || 0}
                                     </span>
                                 </div>
                             </td>
@@ -79,7 +76,7 @@ const CategoryTable = ({ categories, onEditCategory, onDeleteCategory, loading }
                                     </button>
 
                                     <button
-                                        onClick={() => onDeleteCategory(category.id)}
+                                        onClick={() => onDeleteCategory(category?._id)}
                                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-100 dark:hover:bg-red-900"
                                         title="Delete category"
                                     >

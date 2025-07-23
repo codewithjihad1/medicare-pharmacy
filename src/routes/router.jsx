@@ -19,6 +19,7 @@ import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
 import SellerProtectedRoute from "../components/common/ProtectedRoute/SellerProtectedRoute";
 import AuthRouteProtect from "../components/common/AuthRouteProtect/AuthRouteProtect";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import UpdateProfile from "../pages/Dashboard/User/components/UpdateProfile/UpdateProfile";
 
 const router = createBrowserRouter([
     {
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
                 path: "category/:category",
                 Component: CategoryDetails,
             },
+            {
+                path: "/update-profile",
+                element: <ProtectedRoute>
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-auto py-7">
+                        <UpdateProfile />
+                    </div>
+                </ProtectedRoute>
+            }
         ],
     },
     {
