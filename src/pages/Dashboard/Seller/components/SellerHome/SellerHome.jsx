@@ -1,44 +1,25 @@
-import React, { useState, useEffect } from 'react';
 import { FaDollarSign, FaPills, FaShoppingCart, FaClock, FaCheckCircle, FaEye } from 'react-icons/fa';
 import { useAuth } from '../../../../../hooks/useAuth';
-
-// Mock seller revenue data
-const mockSellerData = {
-    totalRevenue: 12476.30,
-    paidTotal: 9850.20,
-    pendingTotal: 2626.10,
-    totalMedicines: 24,
-    totalSales: 156,
-    pendingOrders: 12,
-    monthlyRevenue: [
-        { month: 'Jan', revenue: 2100 },
-        { month: 'Feb', revenue: 2800 },
-        { month: 'Mar', revenue: 2200 },
-        { month: 'Apr', revenue: 3100 },
-        { month: 'May', revenue: 2900 },
-        { month: 'Jun', revenue: 3200 }
-    ]
-};
+import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from '../../../../../hooks/useAxiosSecure';
+import Loading from '../../../../../components/ui/Loading/Loading';
 
 const SellerHome = () => {
     const { user } = useAuth();
-    const [sellerData, setSellerData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const axiosSecure = useAxiosSecure();
 
-    useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setSellerData(mockSellerData);
-            setLoading(false);
-        }, 1000);
-    }, []);
+    //    get seller statistics from API
+    const { data: sellerStats, isLoading } = useQuery({
+        queryKey: ['sellerStats', user?.email],
+        queryFn: async () => {
+            const response = await axiosSecure.get(`/seller/stats/${user?.email}`);
+            return response.data;
+        }
+    });
+    console.log("🚀 ~ SellerHome ~ sellerStats:", sellerStats)
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
+    if (isLoading) {
+        return <Loading />;
     }
 
     return (
@@ -62,11 +43,11 @@ const SellerHome = () => {
                                 Total Revenue
                             </p>
                             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                                ${sellerData.totalRevenue.toFixed(2)}
+                                ${sellerStats.totalRevenue.toFixed(2)}
                             </p>
-                            <p className="text-sm mt-1 text-green-600">
+                            {/* <p className="text-sm mt-1 text-green-600">
                                 ↗ 12.5% from last month
-                            </p>
+                            </p> */}
                         </div>
                         <div className="p-3 rounded-full bg-green-500">
                             <FaDollarSign className="h-6 w-6 text-white" />
@@ -81,11 +62,11 @@ const SellerHome = () => {
                                 Paid Total
                             </p>
                             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                                ${sellerData.paidTotal.toFixed(2)}
+                                ${sellerStats.paidTotal.toFixed(2)}
                             </p>
-                            <p className="text-sm mt-1 text-blue-600">
+                            {/* <p className="text-sm mt-1 text-blue-600">
                                 ↗ 8.3% from last month
-                            </p>
+                            </p> */}
                         </div>
                         <div className="p-3 rounded-full bg-blue-500">
                             <FaCheckCircle className="h-6 w-6 text-white" />
@@ -100,10 +81,10 @@ const SellerHome = () => {
                                 Pending Total
                             </p>
                             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                                ${sellerData.pendingTotal.toFixed(2)}
+                                ${sellerStats.pendingTotal.toFixed(2)}
                             </p>
                             <p className="text-sm mt-1 text-orange-600">
-                                {sellerData.pendingOrders} pending orders
+                                {sellerStats.pendingOrders} pending orders
                             </p>
                         </div>
                         <div className="p-3 rounded-full bg-orange-500">
@@ -119,7 +100,7 @@ const SellerHome = () => {
                                 Total Medicines
                             </p>
                             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                                {sellerData.totalMedicines}
+                                {sellerStats.totalMedicines}
                             </p>
                             <p className="text-sm mt-1 text-purple-600">
                                 Active inventory
@@ -142,22 +123,22 @@ const SellerHome = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600 dark:text-gray-400">Total Sales</span>
-                            <span className="font-semibold text-green-600">{sellerData.totalSales}</span>
+                            <span className="font-semibold text-green-600">{sellerStats.totalSales}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-gray-600 dark:text-gray-400">Pending Orders</span>
-                            <span className="font-semibold text-orange-600">{sellerData.pendingOrders}</span>
+                            <span className="font-semibold text-orange-600">{sellerStats.pendingOrders}</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div
                                 className="bg-green-600 h-2 rounded-full"
                                 style={{
-                                    width: `${((sellerData.totalSales - sellerData.pendingOrders) / sellerData.totalSales) * 100}%`
+                                    width: `${((sellerStats.totalSales - sellerStats.pendingOrders) / sellerStats.totalSales) * 100}%`
                                 }}
                             ></div>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {(((sellerData.totalSales - sellerData.pendingOrders) / sellerData.totalSales) * 100).toFixed(1)}% completion rate
+                            {(((sellerStats.totalSales - sellerStats.pendingOrders) / sellerStats.totalSales) * 100).toFixed(1)}% completion rate
                         </p>
                     </div>
                 </div>
@@ -202,7 +183,7 @@ const SellerHome = () => {
                     Monthly Revenue Trend
                 </h3>
                 <div className="grid grid-cols-6 gap-4">
-                    {sellerData.monthlyRevenue.map((month, index) => (
+                    {sellerStats.monthlyRevenue.map((month, index) => (
                         <div key={index} className="text-center">
                             <div className="bg-blue-100 dark:bg-blue-900 rounded-lg p-4 mb-2">
                                 <div
