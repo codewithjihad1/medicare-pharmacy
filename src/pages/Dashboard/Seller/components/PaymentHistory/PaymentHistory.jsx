@@ -12,8 +12,8 @@ import {
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../../../../hooks/useAuth';
-import axiosInstance from '../../../../../api/axiosInstance';
 import Loading from '../../../../../components/ui/Loading/Loading';
+import useAxiosSecure from '../../../../../hooks/useAxiosSecure';
 
 const PaymentHistory = () => {
     const { user } = useAuth();
@@ -22,12 +22,13 @@ const PaymentHistory = () => {
     const [dateFilter, setDateFilter] = useState('all');
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
+    const axiosSecure = useAxiosSecure();
 
     // Fetch seller's payment history directly from backend
-    const { data: sellerPayments, isLoading } = useQuery({
+    const { data: sellerPayments, isLoading: isLoadingPayments } = useQuery({
         queryKey: ['seller-payments', user?.email],
         queryFn: async () => {
-            const response = await axiosInstance.get(`/seller/payments/${user?.email}`);
+            const response = await axiosSecure.get(`/seller/payments/${user?.email}`);
             return response.data.map(payment => ({
                 id: payment._id,
                 orderId: payment.orderId,
@@ -42,11 +43,21 @@ const PaymentHistory = () => {
                 medicines: payment.sellerItems?.map(item => ({
                     name: item.name || item.medicineName || 'Unknown Medicine',
                     quantity: item.quantity || 1,
-                    price: item.price || 0
+                    price: (item.discountPrice * item.quantity) || 0
                 })) || [],
                 createdAt: payment.createdAt,
                 completedAt: payment.completedAt
             }));
+        },
+        enabled: !!user?.email
+    });
+
+    // get payment stats data
+    const { data: paymentStats, isLoading: isLoadingStats } = useQuery({
+        queryKey: ['payment-stats', user?.email],
+        queryFn: async () => {
+            const response = await axiosSecure.get(`/seller/payment-stats/${user?.email}`);
+            return response.data;
         },
         enabled: !!user?.email
     });
@@ -87,23 +98,6 @@ const PaymentHistory = () => {
             return matchesSearch && matchesStatus && matchesDate;
         });
     }, [sellerPayments, searchTerm, statusFilter, dateFilter]);
-
-    // Calculate summary stats
-    const summaryStats = useMemo(() => {
-        const completed = filteredPayments.filter(p => p.status === 'completed');
-        const pending = filteredPayments.filter(p => p.status === 'pending');
-        const failed = filteredPayments.filter(p => p.status === 'failed');
-
-        return {
-            totalPayments: filteredPayments.length,
-            completedPayments: completed.length,
-            pendingPayments: pending.length,
-            failedPayments: failed.length,
-            totalAmount: completed.reduce((sum, p) => sum + p.amount, 0),
-            totalCommission: completed.reduce((sum, p) => sum + p.commission, 0),
-            netEarnings: completed.reduce((sum, p) => sum + p.netAmount, 0)
-        };
-    }, [filteredPayments]);
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -173,7 +167,7 @@ const PaymentHistory = () => {
     };
 
     // Show loading state
-    if (isLoading) {
+    if (isLoadingPayments || isLoadingStats) {
         return <Loading />;
     }
 
@@ -185,7 +179,7 @@ const PaymentHistory = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Payments</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{summaryStats.totalPayments}</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{paymentStats?.totalPayments}</p>
                         </div>
                         <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
                             <FaCalendarAlt className="text-blue-600 dark:text-blue-400" size={24} />
@@ -197,7 +191,7 @@ const PaymentHistory = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Net Earnings</p>
-                            <p className="text-2xl font-bold text-green-600 dark:text-green-400">${summaryStats.netEarnings.toFixed(2)}</p>
+                            <p className="text-2xl font-bold text-green-600 dark:text-green-400">${paymentStats?.totalEarnings?.toFixed(2)}</p>
                         </div>
                         <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                             <FaCheckCircle className="text-green-600 dark:text-green-400" size={24} />
@@ -209,7 +203,7 @@ const PaymentHistory = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
-                            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{summaryStats.pendingPayments}</p>
+                            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{paymentStats?.pendingPayments}</p>
                         </div>
                         <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
                             <FaClock className="text-yellow-600 dark:text-yellow-400" size={24} />
@@ -221,7 +215,7 @@ const PaymentHistory = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Commission</p>
-                            <p className="text-2xl font-bold text-red-600 dark:text-red-400">${summaryStats.totalCommission.toFixed(2)}</p>
+                            <p className="text-2xl font-bold text-red-600 dark:text-red-400">${paymentStats?.totalCommissions?.toFixed(2)}</p>
                         </div>
                         <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
                             <FaTimesCircle className="text-red-600 dark:text-red-400" size={24} />
@@ -309,8 +303,7 @@ const PaymentHistory = () => {
                                 <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{payment.id}</p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Order: {payment.orderId}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">OrderId: {payment.id}</p>
                                             <p className="text-xs text-gray-400 dark:text-gray-500">{payment.transactionId}</p>
                                         </div>
                                     </td>

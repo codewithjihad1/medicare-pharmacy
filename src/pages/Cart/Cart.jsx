@@ -16,6 +16,7 @@ const Cart = () => {
             setCartItems(JSON.parse(savedCart));
             setLoading(false);
         }
+        setLoading(false);
     }, []);
 
     // Calculate discounted price

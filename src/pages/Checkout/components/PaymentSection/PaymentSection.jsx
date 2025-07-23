@@ -7,8 +7,9 @@ import axiosInstance from '../../../../api/axiosInstance';
 import useTheme from '../../../../hooks/useTheme';
 
 const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess }) => {
+    console.log("🚀 ~ PaymentSection ~ cartItems:", cartItems)
     const navigate = useNavigate();
-    const {theme} = useTheme();
+    const { theme } = useTheme();
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);
@@ -23,7 +24,10 @@ const PaymentSection = ({ customerInfo, orderTotal, cartItems, onPaymentSuccess 
                     amount: orderTotal,
                     currency: 'usd',
                     customerInfo,
-                    cartItems
+                    cartItems: {
+                        ...cartItems,
+                        seller: { ...cartItems.seller }
+                    }
                 });
 
                 setClientSecret(response.data.clientSecret);
