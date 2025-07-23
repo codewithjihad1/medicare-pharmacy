@@ -1,40 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../../context/AuthContext';
 import { FaUser, FaShoppingCart, FaHeart, FaCog } from 'react-icons/fa';
 import Loading from '../../../components/ui/Loading/Loading';
-import { Navigate } from 'react-router';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { useAuth } from '../../../hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
 
 const UserDashboard = () => {
-    const { user, loading } = useContext(AuthContext);
+    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
-    const [userRole, setUserRole] = useState('');
 
-
-    useEffect(() => {
-        const fetchUserFromDb = async () => {
-            if (user) {
-                try {
-                    const response = await axiosSecure.get(`/users/${user.email}`);
-                    setUserRole(response.data.role);
-                } catch (error) {
-                    console.error("Error fetching user role:", error);
-                }
-            }
+    // get user statistics
+    const { data: userStats, isLoading } = useQuery({
+        queryKey: ['userStats', user?.email],
+        queryFn: async () => {
+            const response = await axiosSecure.get(`/user-stats/${user?.email}`);
+            return response.data;
         }
-        fetchUserFromDb();
-    }, [user]);
+    });
 
-    if (loading || !userRole) {
+    // when data isLoading
+    if (isLoading) {
         return <Loading />;
-    }
-
-    if (userRole === 'admin') {
-        return <Navigate to="/dashboard/admin" />;
-    }
-
-    if (userRole === 'seller') {
-        return <Navigate to="/dashboard/seller" />;
     }
 
     return (
@@ -57,7 +42,7 @@ const UserDashboard = () => {
                             <FaShoppingCart className="h-8 w-8 text-blue-500" />
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">12</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{userStats?.totalOrders || 0}</p>
                             </div>
                         </div>
                     </div>
@@ -67,7 +52,7 @@ const UserDashboard = () => {
                             <FaHeart className="h-8 w-8 text-red-500" />
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Wishlist Items</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">5</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{userStats?.wishlistItems || 0}</p>
                             </div>
                         </div>
                     </div>
@@ -79,7 +64,7 @@ const UserDashboard = () => {
                             </div>
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spent</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">$324.50</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">${userStats?.totalSpent || 0}</p>
                             </div>
                         </div>
                     </div>
@@ -90,7 +75,7 @@ const UserDashboard = () => {
                             <div className="ml-4">
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Account Type</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white capitalize">
-                                    {user?.role || 'User'}
+                                    {userStats?.accountType || 'User'}
                                 </p>
                             </div>
                         </div>
@@ -104,24 +89,30 @@ const UserDashboard = () => {
                             Recent Orders
                         </h3>
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div>
-                                    <p className="font-medium text-gray-900 dark:text-white">Order #12345</p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">2 items • $45.99</p>
+                            {userStats?.recentOrders && userStats.recentOrders.length > 0 ? (
+                                userStats.recentOrders.map((order) => (
+                                    <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                        <div>
+                                            <p className="font-medium text-gray-900 dark:text-white">Order #{order.orderId}</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                {order.itemCount} {order.itemCount === 1 ? 'item' : 'items'} • ${order.total.toFixed(2)}
+                                            </p>
+                                        </div>
+                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${order.status === 'Delivered'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                                            }`}>
+                                            {order.status}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-8">
+                                    <FaShoppingCart className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+                                    <p className="text-gray-500 dark:text-gray-400">No orders yet</p>
+                                    <p className="text-sm text-gray-400 dark:text-gray-500">Start shopping to see your orders here</p>
                                 </div>
-                                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                    Delivered
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div>
-                                    <p className="font-medium text-gray-900 dark:text-white">Order #12344</p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">1 item • $12.50</p>
-                                </div>
-                                <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                    Shipped
-                                </span>
-                            </div>
+                            )}
                         </div>
                     </div>
 

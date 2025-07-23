@@ -28,7 +28,7 @@ const SellerDashboard = () => {
         try {
             await logout();
             toast.success('Logged out successfully');
-            navigate('/login');
+            navigate('/auth/login');
         } catch {
             toast.error('Failed to logout');
         }
@@ -67,7 +67,7 @@ const SellerDashboard = () => {
             )}
 
             {/* Sidebar */}
-            <div className={`
+            <div className={` flex flex-col
                 !fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out
                 lg:translate-x-0 lg:static lg:inset-0
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}

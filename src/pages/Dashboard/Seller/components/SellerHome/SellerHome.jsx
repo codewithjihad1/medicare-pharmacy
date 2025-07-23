@@ -16,7 +16,6 @@ const SellerHome = () => {
             return response.data;
         }
     });
-    console.log("🚀 ~ SellerHome ~ sellerStats:", sellerStats)
 
     if (isLoading) {
         return <Loading />;

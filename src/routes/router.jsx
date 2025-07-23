@@ -18,6 +18,7 @@ import AdminProtectedRoute from "../components/common/ProtectedRoute/AdminProtec
 import ProtectedRoute from "../components/common/ProtectedRoute/ProtectedRoute";
 import SellerProtectedRoute from "../components/common/ProtectedRoute/SellerProtectedRoute";
 import AuthRouteProtect from "../components/common/AuthRouteProtect/AuthRouteProtect";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
     {
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
             <ProtectedRoute>
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/dashboard/user",
+        element: (
+            <ProtectedRoute>
                 <UserDashboard />
             </ProtectedRoute>
         ),
@@ -83,17 +92,21 @@ const router = createBrowserRouter([
     {
         path: "/dashboard/seller",
         element: (
-            <SellerProtectedRoute>
-                <SellerDashboard />
-            </SellerProtectedRoute>
+            <ProtectedRoute>
+                <SellerProtectedRoute>
+                    <SellerDashboard />
+                </SellerProtectedRoute>
+            </ProtectedRoute>
         ),
     },
     {
         path: "/dashboard/admin",
         element: (
-            <AdminProtectedRoute>
-                <AdminDashboard />
-            </AdminProtectedRoute>
+            <ProtectedRoute>
+                <AdminProtectedRoute>
+                    <AdminDashboard />
+                </AdminProtectedRoute>
+            </ProtectedRoute>
         ),
     },
 ]);
