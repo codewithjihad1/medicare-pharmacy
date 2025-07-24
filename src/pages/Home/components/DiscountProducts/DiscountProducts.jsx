@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay, FreeMode } from 'swiper/modules'
-
+import { useQuery } from '@tanstack/react-query'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -11,27 +11,34 @@ import 'swiper/css/free-mode'
 import ProductCard from './ProductCard'
 import axiosInstance from '../../../../api/axiosInstance'
 import LoadingSectionData from '../../../../components/ui/Loading/LoadingSectionData'
+import ErrorDataFetching from '../../../../components/ui/Error/ErrorDataFetching'
 
 const DiscountProducts = () => {
-  const [discountProducts, setDiscountProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // Fetch discount products using TanStack Query
+  const {
+    data: discountProducts = [],
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['discount-products'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/medicines/discount-products');
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+  });
 
-  // fetch discount products from API or use static data
-  useEffect(() => {
-    setLoading(true);
-    // fetching data from an API
-    const fetchDiscountProducts = async () => {
-      const response = await axiosInstance.get('/discount-products');
-      setDiscountProducts(response.data);
-      setLoading(false);
-    };
-
-    fetchDiscountProducts();
-  }, [])
-
-  // if data is loading
-  if (loading) {
+  // Loading state
+  if (isLoading) {
     return <LoadingSectionData />;
+  }
+
+  // Error state
+  if (error) {
+    return <ErrorDataFetching error={error} refetch={refetch} />;
   }
 
   return (
