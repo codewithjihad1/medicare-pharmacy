@@ -2,8 +2,10 @@ import React from 'react'
 import useRole from '../../hooks/useRole';
 import Loading from '../../components/ui/Loading/Loading';
 import { Navigate } from 'react-router';
+import { useTitle, PAGE_TITLES } from '../../hooks/useTitle';
 
 const Dashboard = () => {
+    useTitle(PAGE_TITLES.DASHBOARD);
     const { role: userRole, isLoading } = useRole();
 
     if (isLoading) {

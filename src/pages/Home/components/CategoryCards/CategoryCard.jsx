@@ -1,13 +1,19 @@
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
-const CategoryCard = ({ category, handleCategoryClick, getColorClasses }) => {
+const CategoryCard = ({ category, getColorClasses }) => {
     const colorClasses = getColorClasses(category.color);
+
+    const navigate = useNavigate();
+    const handleNavigate = () => {
+        navigate(`/category/${category.slug}`);
+    };
 
     return (
         <div
             key={category._id}
-            onClick={() => handleCategoryClick(category)}
+            onClick={handleNavigate}
             className="group cursor-pointer rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
             {/* Category Image */}

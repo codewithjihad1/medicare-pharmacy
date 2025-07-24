@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
 import SearchFilter from './components/SearchFilter/SearchFilter';
 import MedicineTable from './components/MedicineTable/MedicineTable';
 import Pagination from './components/Pagination/Pagination';
 import MedicineDetailModal from './components/MedicineModal/MedicineDetailModal';
 import Loading from '../../components/ui/Loading/Loading';
 import axiosInstance from '../../api/axiosInstance';
+import { useQueryConfig, queryKeys } from '../../hooks/useQueryConfig';
+import { useTitle, PAGE_TITLES } from '../../hooks/useTitle';
+import ErrorDataFetching from '../../components/ui/Error/ErrorDataFetching';
 
 const Shop = () => {
-    const [medicines, setMedicines] = useState([]);
+    useTitle(PAGE_TITLES.SHOP);
+    const queryConfig = useQueryConfig();
     const [filteredMedicines, setFilteredMedicines] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [selectedMedicine, setSelectedMedicine] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,22 +23,20 @@ const Shop = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
-    useEffect(() => {
-        const fetchMedicines = async () => {
-            setLoading(true);
-            try {
-                const response = await axiosInstance.get('/medicines');
-                setMedicines(response.data);
-                setFilteredMedicines(response.data);
-            } catch (error) {
-                toast.error('Failed to fetch medicines');
-                console.error('Error fetching medicines:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchMedicines();
-    }, []);
+    // Fetch medicines using TanStack Query
+    const {
+        data: medicines = [],
+        isLoading,
+        error,
+        refetch
+    } = useQuery({
+        queryKey: queryKeys.medicines,
+        queryFn: async () => {
+            const response = await axiosInstance.get('/medicines');
+            return response.data;
+        },
+        ...queryConfig,
+    });
 
     // Filter and search functionality
     useEffect(() => {
@@ -104,8 +105,14 @@ const Shop = () => {
         setSelectedMedicine(null);
     };
 
-    if (loading) {
+    // Loading state
+    if (isLoading) {
         return <Loading />;
+    }
+
+    // Error state
+    if (error) {
+        return <ErrorDataFetching error={error} refetch={refetch} />;
     }
 
     return (

@@ -35,7 +35,7 @@ const AdvertiseRequest = () => {
     const { data: medicines, isLoading: isMedicinesLoading } = useQuery({
         queryKey: ['medicines', user?.email],
         queryFn: async () => {
-            const response = await axiosInstance.get(`/medicines/${user?.email}`);
+            const response = await axiosInstance.get(`/medicines/seller/${user?.email}`);
             return response.data;
         }
     });
@@ -44,7 +44,7 @@ const AdvertiseRequest = () => {
     const { data: advertiseRequests, isLoading: isAdvertiseLoading } = useQuery({
         queryKey: ['advertise-requests', user?.email],
         queryFn: async () => {
-            const response = await axiosInstance.get(`/advertise-requests/${user?.email}`);
+            const response = await axiosInstance.get(`/advertise-requests/seller/${user?.email}`);
             return response.data;
         }
     });

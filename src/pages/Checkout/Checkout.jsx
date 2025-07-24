@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import OrderSummary from './components/OrderSummary/OrderSummary';
 import PaymentSection from './components/PaymentSection/PaymentSection';
+import { useTitle, PAGE_TITLES } from '../../hooks/useTitle';
 
 // loadStripe initializes Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -55,6 +56,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 // ];
 
 const Checkout = () => {
+    useTitle(PAGE_TITLES.CHECKOUT);
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentStep, setCurrentStep] = useState(1);

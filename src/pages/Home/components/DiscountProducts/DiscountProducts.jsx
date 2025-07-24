@@ -11,9 +11,12 @@ import 'swiper/css/free-mode'
 import ProductCard from './ProductCard'
 import axiosInstance from '../../../../api/axiosInstance'
 import LoadingSectionData from '../../../../components/ui/Loading/LoadingSectionData'
+import { useQueryConfig, queryKeys } from '../../../../hooks/useQueryConfig'
 import ErrorDataFetching from '../../../../components/ui/Error/ErrorDataFetching'
 
 const DiscountProducts = () => {
+  const queryConfig = useQueryConfig();
+
   // Fetch discount products using TanStack Query
   const {
     data: discountProducts = [],
@@ -21,14 +24,12 @@ const DiscountProducts = () => {
     error,
     refetch
   } = useQuery({
-    queryKey: ['discount-products'],
+    queryKey: queryKeys.discountProducts,
     queryFn: async () => {
       const response = await axiosInstance.get('/medicines/discount-products');
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnWindowFocus: false,
+    ...queryConfig,
   });
 
   // Loading state

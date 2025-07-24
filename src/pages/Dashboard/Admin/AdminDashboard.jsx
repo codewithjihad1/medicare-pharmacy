@@ -9,6 +9,7 @@ import {
     FaBars,
     FaTimes
 } from 'react-icons/fa';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
 // Import all admin components
 import AdminHome from './components/AdminHome/AdminHome';
@@ -19,6 +20,7 @@ import SalesReport from './components/SalesReport/SalesReport';
 import ManageBanner from './components/ManageBanner/ManageBanner';
 
 const AdminDashboard = () => {
+    useTitle(PAGE_TITLES.ADMIN_DASHBOARD);
     const [activeTab, setActiveTab] = useState('home');
     const [sidebarOpen, setSidebarOpen] = useState(false);
 

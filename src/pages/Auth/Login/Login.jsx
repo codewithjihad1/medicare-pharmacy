@@ -5,8 +5,10 @@ import { AuthContext } from '../../../context/AuthContext';
 import { FaEye, FaEyeSlash, FaGoogle, FaGithub } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import saveUserDataOnDb from '../../../utils/saveUserDb';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
 const Login = () => {
+    useTitle(PAGE_TITLES.LOGIN);
     const [showPassword, setShowPassword] = useState(false);
     const { loginWithEmailPassword, loginWithGoogle, loginWithGitHub, loading } = useContext(AuthContext);
     const navigate = useNavigate();

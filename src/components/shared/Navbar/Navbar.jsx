@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { AuthContext } from '../../../context/AuthContext';
 import useTheme from '../../../hooks/useTheme';
+import { getCartItems } from '../../../utils/addToCart';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -48,6 +49,10 @@ const Navbar = () => {
     setIsProfileDropdownOpen(false);
     setIsLanguageDropdownOpen(false);
   };
+
+  // Cart items count
+  const cartCount = getCartItems().length;
+
 
   return (
     <nav className="print:hidden bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 transition-colors duration-300">
@@ -96,7 +101,7 @@ const Navbar = () => {
             >
               <FaShoppingCart className="w-6 h-6" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                0
+                {cartCount}
               </span>
             </Link>
 

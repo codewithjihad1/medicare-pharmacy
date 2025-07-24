@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 import { AuthContext } from '../../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
 const ForgotPassword = () => {
+    useTitle(PAGE_TITLES.FORGOT_PASSWORD);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { resetPasswordWithEmail } = useContext(AuthContext);
 

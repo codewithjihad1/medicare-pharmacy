@@ -4,41 +4,26 @@ import { useQuery } from '@tanstack/react-query';
 import RevenueCard from './RevenueCard';
 import useAxiosSecure from '../../../../../hooks/useAxiosSecure';
 import Loading from '../../../../../components/ui/Loading/Loading';
+import { useQueryConfig, queryKeys } from '../../../../../hooks/useQueryConfig';
+import ErrorDataFetching from '../../../../../components/ui/Error/ErrorDataFetching';
 
 const AdminHome = () => {
     const axiosSecure = useAxiosSecure();
+    const queryConfig = useQueryConfig();
 
     // Fetch admin statistics using TanStack Query
     const { data: stats, isLoading, error, refetch } = useQuery({
-        queryKey: ['admin-stats'],
+        queryKey: queryKeys.adminStats,
         queryFn: async () => {
             const response = await axiosSecure.get('/admin/stats');
             return response.data;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        cacheTime: 10 * 60 * 1000, // 10 minutes
-        refetchOnWindowFocus: false,
+        ...queryConfig,
     });
-    console.log("🚀 ~ AdminHome ~ stats:", stats)
 
     // Error state
     if (error) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                    <p className="text-red-600 dark:text-red-400 mb-4">Error loading dashboard statistics</p>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
-                        {error.response?.data?.message || error.message}
-                    </p>
-                    <button
-                        onClick={() => refetch()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
+        return <ErrorDataFetching error={error} refetch={refetch} />;
     }
 
     // Loading state
@@ -214,8 +199,8 @@ const AdminHome = () => {
                                 <div
                                     key={index}
                                     className={`flex items-center p-3 rounded-lg ${activity.status === 'paid'
-                                            ? 'bg-green-50 dark:bg-green-900/20'
-                                            : 'bg-orange-50 dark:bg-orange-900/20'
+                                        ? 'bg-green-50 dark:bg-green-900/20'
+                                        : 'bg-orange-50 dark:bg-orange-900/20'
                                         }`}
                                 >
                                     {activity.status === 'paid' ? (

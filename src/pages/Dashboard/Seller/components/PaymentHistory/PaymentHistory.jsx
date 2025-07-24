@@ -30,27 +30,28 @@ const PaymentHistory = () => {
         queryFn: async () => {
             const response = await axiosSecure.get(`/seller/payments/${user?.email}`);
             return response.data.map(payment => ({
-                id: payment._id,
+                id: payment.orderId,
                 orderId: payment.orderId,
-                amount: payment.amount,
+                amount: payment.totalAmount,
                 commission: payment.commission,
                 netAmount: payment.netAmount,
-                status: payment.status,
+                status: payment.paymentStatus,
                 paymentMethod: 'Stripe',
-                transactionId: payment.paymentIntentId || 'N/A',
-                customerName: payment.customerInfo?.fullName || 'Unknown Customer',
-                customerEmail: payment.customerInfo?.email || 'Unknown Email',
+                transactionId: payment.paymentId || 'N/A',
+                customerName: payment.buyerName || 'Unknown Customer',
+                customerEmail: payment.buyerEmail || 'Unknown Email',
                 medicines: payment.sellerItems?.map(item => ({
                     name: item.name || item.medicineName || 'Unknown Medicine',
                     quantity: item.quantity || 1,
                     price: (item.discountPrice * item.quantity) || 0
                 })) || [],
                 createdAt: payment.createdAt,
-                completedAt: payment.completedAt
+                completedAt: payment.createdAt
             }));
         },
         enabled: !!user?.email
     });
+    console.log("🚀 ~ PaymentHistory ~ sellerPayments:", sellerPayments)
 
     // get payment stats data
     const { data: paymentStats, isLoading: isLoadingStats } = useQuery({
@@ -315,9 +316,9 @@ const PaymentHistory = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">${payment.amount.toFixed(2)}</p>
-                                            <p className="text-xs text-red-500 dark:text-red-400">Commission: ${payment.commission.toFixed(2)}</p>
-                                            <p className="text-xs text-green-600 dark:text-green-400">Net: ${payment.netAmount.toFixed(2)}</p>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">${payment?.amount?.toFixed(2)}</p>
+                                            <p className="text-xs text-red-500 dark:text-red-400">Commission: ${payment?.commission?.toFixed(2)}</p>
+                                            <p className="text-xs text-green-600 dark:text-green-400">Net: ${payment?.netAmount?.toFixed(2)}</p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">

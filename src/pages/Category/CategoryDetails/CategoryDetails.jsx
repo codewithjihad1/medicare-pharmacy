@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { FaArrowLeft, FaList } from 'react-icons/fa';
 import SearchFilter from '../../Shop/components/SearchFilter/SearchFilter';
@@ -8,14 +9,15 @@ import Pagination from '../../Shop/components/Pagination/Pagination';
 import MedicineDetailModal from '../../Shop/components/MedicineModal/MedicineDetailModal';
 import axiosInstance from '../../../api/axiosInstance';
 import Loading from '../../../components/ui/Loading/Loading';
+import { useQueryConfig, queryKeys } from '../../../hooks/useQueryConfig';
+import { useTitle } from '../../../hooks/useTitle';
+import ErrorDataFetching from '../../../components/ui/Error/ErrorDataFetching';
 
 const CategoryDetails = () => {
-    const { category } = useParams();
+    const { categorySlug } = useParams();
     const navigate = useNavigate();
-    const [medicines, setMedicines] = useState([]);
-    const [categoryInfo, setCategoryInfo] = useState([]);
+    const queryConfig = useQueryConfig();
     const [filteredMedicines, setFilteredMedicines] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [selectedMedicine, setSelectedMedicine] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -24,40 +26,44 @@ const CategoryDetails = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
 
+    // Fetch medicines by category using TanStack Query
+    const {
+        data: medicines = [],
+        isLoading: medicinesLoading,
+        error: medicinesError,
+        refetch: refetchMedicines
+    } = useQuery({
+        queryKey: queryKeys.medicinesByCategory(categorySlug),
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/medicines/category/${categorySlug}`);
+            return response.data;
+        },
+        ...queryConfig,
+    });
+
+    // Fetch category information using TanStack Query
+    const {
+        data: categoryInfo = {},
+        isLoading: categoryLoading,
+        error: categoryError,
+        refetch: refetchCategory
+    } = useQuery({
+        queryKey: queryKeys.categoryInfo(categorySlug),
+        queryFn: async () => {
+            const response = await axiosInstance.get(`/categories/${categorySlug}`);
+            return response.data;
+        },
+        ...queryConfig,
+    });
+
+    // Combined loading state
+    const loading = medicinesLoading || categoryLoading;
+
     // Get category information
-    const currentCategory = categoryInfo[category] || categoryInfo.others;
+    const currentCategory = categoryInfo[categorySlug] || categoryInfo.others;
 
-    useEffect(() => {
-        const fetchMedicines = async () => {
-            setLoading(true);
-            try {
-                const response = await axiosInstance.get(`/medicines/category/${category}`);
-                setMedicines(response.data);
-            } catch (error) {
-                console.error('Error fetching medicines:', error);
-                toast.error('Failed to fetch medicines');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // fetch categories
-        const fetchCategories = async () => {
-            setLoading(true);
-            try {
-                const response = await axiosInstance.get(`/categories/${category}`);
-                setCategoryInfo(response.data);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-                toast.error('Failed to fetch categories');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCategories()
-        fetchMedicines();
-    }, [category]);
+    // Set dynamic title based on category
+    useTitle(currentCategory?.name ? `${currentCategory.name} - Medicine Category` : 'Category Details');
 
     // Filter and search functionality
     useEffect(() => {
@@ -137,6 +143,14 @@ const CategoryDetails = () => {
         return <Loading />;
     }
 
+    // Error handling
+    if (medicinesError || categoryError) {
+        return <ErrorDataFetching error={medicinesError || categoryError} refetch={() => {
+            refetchMedicines();
+            refetchCategory();
+        }} />;
+    }
+
     if (filteredMedicines.length === 0 && !searchTerm) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -147,7 +161,7 @@ const CategoryDetails = () => {
                             No {currentCategory?.name} Available
                         </h1>
                         <p className="text-gray-600 dark:text-gray-400 mb-8">
-                            No medicines found in the {category} category.
+                            No medicines found in the {categorySlug} category.
                         </p>
                         <button
                             onClick={handleBackToCategories}

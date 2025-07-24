@@ -23,11 +23,9 @@ const HeroSlider = () => {
         },
         // staleTime: 5 * 60 * 1000, // 5 minutes
     });
-    console.log("🚀 ~ HeroSlider ~ bannerAds:", bannerAds)
 
     const handleViewDetails = (advertisement) => {
-        // TODO: Implement view details modal or navigation to medicine details
-        console.log('View advertisement details:', advertisement);
+        console.log('View details for:', advertisement);
     };
 
     if (isLoading) {

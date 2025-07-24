@@ -5,8 +5,10 @@ import toast from 'react-hot-toast';
 import CartItem from './components/CartItem/CartItem';
 import CartSummary from './components/CartSummary/CartSummary';
 import Loading from '../../components/ui/Loading/Loading';
+import { useTitle, PAGE_TITLES } from '../../hooks/useTitle';
 
 const Cart = () => {
+    useTitle(PAGE_TITLES.CART);
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
 

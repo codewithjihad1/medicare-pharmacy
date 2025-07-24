@@ -35,7 +35,7 @@ const ManageMedicines = () => {
         queryKey: ['medicines'],
         enabled: !!user?.email,
         queryFn: async () => {
-            const response = await axiosInstance.get(`/medicines/${user?.email}`)
+            const response = await axiosInstance.get(`/medicines/seller/${user?.email}`)
             return response.data;
         }
     });

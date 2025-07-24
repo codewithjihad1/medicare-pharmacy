@@ -5,8 +5,10 @@ import { pdf } from '@react-pdf/renderer';
 import toast from 'react-hot-toast';
 import Loading from '../../components/ui/Loading/Loading';
 import InvoicePDF from './components/InvoicePDF';
+import { useTitle, PAGE_TITLES } from '../../hooks/useTitle';
 
 const Invoice = () => {
+    useTitle(PAGE_TITLES.INVOICE);
     const navigate = useNavigate();
     const [paymentData, setPaymentData] = useState(null);
     const [loading, setLoading] = useState(true);

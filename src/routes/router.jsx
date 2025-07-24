@@ -51,7 +51,7 @@ const router = createBrowserRouter([
                 Component: CategoryList,
             },
             {
-                path: "category/:category",
+                path: "category/:categorySlug",
                 Component: CategoryDetails,
             },
             {

@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import { FaChevronRight } from 'react-icons/fa';
 import Loading from '../../../components/ui/Loading/Loading';
 import axiosInstance from '../../../api/axiosInstance';
-import toast from 'react-hot-toast';
+import { useQueryConfig, queryKeys } from '../../../hooks/useQueryConfig';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
+import ErrorDataFetching from '../../../components/ui/Error/ErrorDataFetching';
 
 const CategoryList = () => {
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    useTitle(PAGE_TITLES.CATEGORIES);
+    const queryConfig = useQueryConfig();
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            setLoading(true);
-            try {
-                const response = await axiosInstance.get('/categories');
-                setCategories(response.data);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-                toast.error('Failed to fetch categories');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchCategories();
-    }, []);
-
-    const getColorClasses = (color) => {
+    // Fetch categories using TanStack Query
+    const {
+        data: categories = [],
+        isLoading,
+        error,
+        refetch
+    } = useQuery({
+        queryKey: queryKeys.categories,
+        queryFn: async () => {
+            const response = await axiosInstance.get('/categories');
+            return response.data;
+        },
+        ...queryConfig,
+    }); const getColorClasses = (color) => {
         const colorMap = {
             blue: 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700',
             purple: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
@@ -48,8 +47,14 @@ const CategoryList = () => {
         return borderMap[color] || borderMap.gray;
     };
 
-    if (loading) {
+    // Loading state
+    if (isLoading) {
         return <Loading />;
+    }
+
+    // Error state
+    if (error) {
+        return <ErrorDataFetching error={error} refetch={refetch} />;
     }
 
     return (

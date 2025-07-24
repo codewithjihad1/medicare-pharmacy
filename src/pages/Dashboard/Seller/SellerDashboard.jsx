@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
 // Import components
 import SellerHome from './components/SellerHome/SellerHome';
@@ -19,6 +20,7 @@ import AdvertiseRequest from './components/AdvertiseRequest/AdvertiseRequest';
 import { AuthContext } from '../../../context/AuthContext';
 
 const SellerDashboard = () => {
+    useTitle(PAGE_TITLES.SELLER_DASHBOARD);
     const [activeTab, setActiveTab] = useState('home');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);

@@ -7,8 +7,10 @@ import { useAuth } from '../../../hooks/useAuth';
 import { imageUpload } from '../../../utils/imageUpload';
 import Loading from '../../../components/ui/Loading/Loading';
 import saveUserDataOnDb from '../../../utils/saveUserDb';
+import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
 const Signup = () => {
+    useTitle(PAGE_TITLES.SIGNUP);
     const [showPassword, setShowPassword] = useState(false);
     const [imagePreview, setImagePreview] = useState('');
     const [photoURL, setPhotoURL] = useState('');
