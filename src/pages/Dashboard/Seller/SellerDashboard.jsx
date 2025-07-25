@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
     FaHome,
     FaPills,
@@ -6,7 +6,8 @@ import {
     FaBullhorn,
     FaSignOutAlt,
     FaBars,
-    FaTimes
+    FaTimes,
+    FaChevronRight
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
@@ -25,6 +26,29 @@ const SellerDashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    // Handle responsive behavior and keyboard events
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setSidebarOpen(false);
+            }
+        };
+
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && sidebarOpen) {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [sidebarOpen]);
 
     const handleLogout = async () => {
         try {
@@ -59,50 +83,61 @@ const SellerDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
                     onClick={() => setSidebarOpen(false)}
+                    aria-hidden="true"
                 />
             )}
 
             {/* Sidebar */}
-            <div className={` flex flex-col
-                !fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out
-                lg:translate-x-0 lg:static lg:inset-0
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
-                <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
-                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">Seller Panel</h2>
+            <div className={`!fixed inset-y-0 left-0 z-50 w-72 flex flex-col justify-between bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 shadow-2xl border-r border-gray-200/50 dark:border-gray-700/50 transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}>
+                {/* Header */}
+                <div className="flex items-center justify-between h-20 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <FaPills className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-xl font-bold text-white">Seller Panel</h2>
+                    </div>
                     <button
                         onClick={() => setSidebarOpen(false)}
-                        className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                        className="lg:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
+                        aria-label="Close sidebar"
                     >
-                        <FaTimes size={20} />
+                        <FaTimes size={18} />
                     </button>
                 </div>
 
                 {/* User Info */}
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                                {user?.displayName?.charAt(0).toUpperCase() || 'S'}
-                            </span>
+                <div className="p-6 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-b border-gray-200/50 dark:border-gray-700/50">
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <span className="text-white font-bold text-lg">
+                                    {user?.displayName?.charAt(0).toUpperCase() || 'S'}
+                                </span>
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-gray-800"></div>
                         </div>
-                        <div>
-                            <p className="font-medium text-gray-800 dark:text-white">{user?.displayName || 'Seller'}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Seller Account</p>
+                        <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-white truncate">
+                                {user?.displayName || 'Seller'}
+                            </p>
+                            <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Seller Account</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 py-6 space-y-2">
+                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                     {sidebarItems.map((item) => {
                         const Icon = item.icon;
+                        const isActive = activeTab === item.id;
                         return (
                             <button
                                 key={item.id}
@@ -110,62 +145,99 @@ const SellerDashboard = () => {
                                     setActiveTab(item.id);
                                     setSidebarOpen(false);
                                 }}
-                                className={`
-                  w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200
-                  ${activeTab === item.id
-                                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-white'
-                                    }
-                `}
+                                className={`group relative w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 ${isActive
+                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 transform scale-[1.02]'
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 hover:text-emerald-700 dark:hover:text-emerald-400'
+                                    }`}
                             >
-                                <Icon size={20} />
-                                <span className="font-medium">{item.label}</span>
+                                <div className="flex items-center space-x-3">
+                                    <div className={`p-2 rounded-lg transition-colors duration-200 ${isActive
+                                            ? 'bg-white/20'
+                                            : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/20'
+                                        }`}>
+                                        <Icon size={18} />
+                                    </div>
+                                    <span className="font-medium">{item.label}</span>
+                                </div>
+                                <FaChevronRight
+                                    className={`w-4 h-4 transition-all duration-200 ${isActive ? 'opacity-100 text-white' : 'opacity-0 group-hover:opacity-60'
+                                        }`}
+                                />
+
+                                {/* Active indicator */}
+                                {isActive && (
+                                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-r-full"></div>
+                                )}
                             </button>
                         );
                     })}
                 </nav>
 
                 {/* Logout Button */}
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="p-1 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200"
+                        className="w-full flex items-center justify-between px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200 group"
                     >
-                        <FaSignOutAlt size={20} />
-                        <span className="font-medium">Logout</span>
+                        <div className="flex items-center space-x-3">
+                            <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20 group-hover:bg-red-200 dark:group-hover:bg-red-900/40 transition-colors duration-200">
+                                <FaSignOutAlt size={18} />
+                            </div>
+                            <span className="font-medium">Logout</span>
+                        </div>
+                        <FaChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-60 transition-opacity duration-200" />
                     </button>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 lg:ml-0 lg:pl-64 w-full">
+            <div className="flex-1 lg:ml-0 min-w-0 lg:pl-72">
                 {/* Header */}
-                <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+                <header className="sticky top-0 z-30 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50">
                     <div className="flex items-center justify-between h-16 px-6">
                         <div className="flex items-center space-x-4">
+                            {/* Mobile menu button */}
                             <button
                                 onClick={() => setSidebarOpen(true)}
-                                className="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                                className="lg:hidden p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors duration-200"
+                                aria-label="Open sidebar"
                             >
-                                <FaBars size={20} />
+                                <FaBars size={18} />
                             </button>
-                            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                                {sidebarItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
-                            </h1>
+
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                    <span className="text-white font-bold text-sm">
+                                        {sidebarItems.find(item => item.id === activeTab)?.label?.charAt(0) || 'D'}
+                                    </span>
+                                </div>
+                                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                                    {sidebarItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+                                </h1>
+                            </div>
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <div className="hidden md:block">
+                            <div className="hidden md:block text-right">
                                 <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back,</p>
-                                <p className="font-medium text-gray-800 dark:text-white">{user?.displayName || 'Seller'}</p>
+                                <p className="font-semibold text-gray-900 dark:text-white">
+                                    {user?.displayName || 'Seller'}
+                                </p>
+                            </div>
+                            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold text-sm">
+                                    {user?.displayName?.charAt(0).toUpperCase() || 'S'}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </header>
 
                 {/* Content */}
-                <main className="p-6">
-                    {renderContent()}
+                <main className="p-6 lg:p-8 max-w-7xl mx-auto">
+                    <div className="animate-in fade-in duration-300">
+                        {renderContent()}
+                    </div>
                 </main>
             </div>
         </div>

@@ -18,9 +18,11 @@ import ManageCategory from './components/ManageCategory/ManageCategory';
 import PaymentManagement from './components/PaymentManagement/PaymentManagement';
 import SalesReport from './components/SalesReport/SalesReport';
 import ManageBanner from './components/ManageBanner/ManageBanner';
+import { useAuth } from '../../../hooks/useAuth';
 
 const AdminDashboard = () => {
     useTitle(PAGE_TITLES.ADMIN_DASHBOARD);
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('home');
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -68,23 +70,22 @@ const AdminDashboard = () => {
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             {/* Mobile menu button */}
-            <div className="lg:hidden fixed top-4 left-4 z-50">
+            {!sidebarOpen && (<div className="lg:hidden fixed top-4 left-4 z-50">
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
                     className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-200 hover:shadow-xl"
                     aria-label={sidebarOpen ? 'Close menu' : 'Open menu'}
                 >
-                    {sidebarOpen ? (
-                        <FaTimes className="h-5 w-5" />
-                    ) : (
+                    {!sidebarOpen && (
                         <FaBars className="h-5 w-5" />
                     )}
                 </button>
-            </div>
+            </div>)}
+
 
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`!fixed inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     } lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ease-in-out z-40 lg:z-auto`}
             >
                 <div className="flex h-screen w-64 flex-col bg-white dark:bg-gray-800 shadow-2xl lg:shadow-xl">
@@ -131,14 +132,14 @@ const AdminDashboard = () => {
                                             setSidebarOpen(false);
                                         }}
                                         className={`group flex w-full items-center rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 transform hover:scale-[1.02] ${isActive
-                                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25'
-                                                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
+                                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
                                             }`}
                                     >
                                         <Icon
                                             className={`mr-4 h-5 w-5 flex-shrink-0 transition-colors ${isActive
-                                                    ? 'text-white'
-                                                    : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300'
+                                                ? 'text-white'
+                                                : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300'
                                                 }`}
                                         />
                                         <span className="font-medium">{item.label}</span>
@@ -155,7 +156,7 @@ const AdminDashboard = () => {
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        {/* <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <div className="px-4 py-3 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-750 rounded-xl">
                                 <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
                                     Quick Stats
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </nav>
 
                     {/* Footer */}
@@ -226,18 +227,6 @@ const AdminDashboard = () => {
                                     </svg>
                                 </button>
 
-                                {/* Notifications */}
-                                <div className="relative">
-                                    <button className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5-5 5-5v.5a6 6 0 01-6 6z" />
-                                        </svg>
-                                        <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                                            3
-                                        </span>
-                                    </button>
-                                </div>
-
                                 {/* Admin Profile */}
                                 <div className="flex items-center space-x-3">
                                     <div className="hidden sm:block text-right">
@@ -246,7 +235,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <button className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                         <img
-                                            src="https://via.placeholder.com/32x32?text=A"
+                                            src={user?.photoURL}
                                             alt="Admin"
                                             className="h-8 w-8 rounded-lg object-cover ring-2 ring-blue-500"
                                         />
