@@ -92,42 +92,44 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Language Dropdown */}
-          <div className="hidden lg:block relative">
-            <button
-              onClick={() => {
-                setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-                setIsProfileDropdownOpen(false);
-              }}
-              className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-            >
-              <FaGlobe className="w-5 h-5" />
-              <span className="text-sm font-medium">{selectedLanguage}</span>
-              <FaChevronDown className="w-3 h-3" />
-            </button>
 
-            {isLanguageDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => {
-                      setSelectedLanguage(lang.code);
-                      setIsLanguageDropdownOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    {lang.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
 
 
           {/* Right Side Icons */}
           <div className="flex items-center space-x-4">
+            
+            {/* Language Dropdown */}
+            <div className="hidden lg:block relative">
+              <button
+                onClick={() => {
+                  setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+                  setIsProfileDropdownOpen(false);
+                }}
+                className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                <FaGlobe className="w-5 h-5" />
+                <span className="text-sm font-medium">{selectedLanguage}</span>
+                <FaChevronDown className="w-3 h-3" />
+              </button>
+
+              {isLanguageDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setSelectedLanguage(lang.code);
+                        setIsLanguageDropdownOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Theme Toggle */}
             <button
