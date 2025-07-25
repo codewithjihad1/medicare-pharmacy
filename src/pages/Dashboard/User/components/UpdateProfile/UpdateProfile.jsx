@@ -16,7 +16,7 @@ const UpdateProfile = () => {
     const { data: userData, isLoading: isProfileLoading } = useQuery({
         queryKey: ['userData', user?.email],
         queryFn: async () => {
-            const response = await axiosSecure.get(`/user/profile/${user?.email}`);
+            const response = await axiosSecure.get(`/users/profile/${user?.email}`);
             return response.data;
         },
     });
@@ -57,7 +57,7 @@ const UpdateProfile = () => {
             await profileUpdate(data.displayName, data.photoURL);
 
             // update user profile in database
-            await axiosSecure.put('/user/profile', {
+            await axiosSecure.put('/users/profile', {
                 email: user.email,
                 ...data
             });

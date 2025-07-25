@@ -64,7 +64,7 @@ const Navbar = () => {
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">M</span>
               </div>
-              <span className="text-xl font-bold text-gray-800 dark:text-white">
+              <span className="hidden lg:inline-block text-xl font-bold text-gray-800 dark:text-white">
                 MediStore
               </span>
             </Link>
@@ -92,8 +92,51 @@ const Navbar = () => {
             </Link>
           </div>
 
+          {/* Language Dropdown */}
+          <div className="hidden lg:block relative">
+            <button
+              onClick={() => {
+                setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+                setIsProfileDropdownOpen(false);
+              }}
+              className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+            >
+              <FaGlobe className="w-5 h-5" />
+              <span className="text-sm font-medium">{selectedLanguage}</span>
+              <FaChevronDown className="w-3 h-3" />
+            </button>
+
+            {isLanguageDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setSelectedLanguage(lang.code);
+                      setIsLanguageDropdownOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+
+
           {/* Right Side Icons */}
           <div className="flex items-center space-x-4">
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+            >
+              {theme === 'dark' ? '🌞' : '🌙'}
+            </button>
+
             {/* Cart Icon */}
             <Link
               to="/cart"
@@ -105,45 +148,9 @@ const Navbar = () => {
               </span>
             </Link>
 
-            {/* Language Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-                  setIsProfileDropdownOpen(false);
-                }}
-                className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-              >
-                <FaGlobe className="w-5 h-5" />
-                <span className="text-sm font-medium">{selectedLanguage}</span>
-                <FaChevronDown className="w-3 h-3" />
-              </button>
 
-              {isLanguageDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setSelectedLanguage(lang.code);
-                        setIsLanguageDropdownOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-            >
-              {theme === 'dark' ? '🌞' : '🌙'}
-            </button>
+
 
             {/* User Authentication */}
             {user ? (

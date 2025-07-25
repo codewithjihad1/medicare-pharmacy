@@ -10,13 +10,13 @@ const Home = () => {
   useTitle(PAGE_TITLES.HOME);
 
   return (
-    <main>
+    <>
       <HeroSlider />
       <CategoryCards />
       <DiscountProducts />
       <HealthBlog />
       <HealthcarePartners />
-    </main>
+    </>
   )
 }
 

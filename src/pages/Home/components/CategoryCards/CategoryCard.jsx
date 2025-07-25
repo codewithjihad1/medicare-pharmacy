@@ -66,7 +66,7 @@ const CategoryCard = ({ category, getColorClasses }) => {
             </div>
 
             {/* Hover Effect Border */}
-            <div className={`absolute inset-0 border-2 border-transparent group-hover:${colorClasses.border} rounded-xl transition-all duration-200 pointer-events-none`}></div>
+            {/* <div className={`absolute inset-0 border-2 border-transparent group-hover:${colorClasses.border} rounded-xl transition-all duration-200 pointer-events-none`}></div> */}
         </div>
     )
 }

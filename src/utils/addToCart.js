@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const addToCart = (medicine) => {
     const getCartItems = localStorage.getItem("cartItems");
 
@@ -12,9 +14,12 @@ const addToCart = (medicine) => {
         }
 
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+        toast.success(`${medicine.name} added to cart!`);
     } else {
         const newCartItems = [{ ...medicine, quantity: 1 }];
         localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+        toast.success(`${medicine.name} added to cart!`);
     }
 };
 
