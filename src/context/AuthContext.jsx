@@ -11,6 +11,8 @@ const AuthProvider = ({ children }) => {
     const [errorMessage, setErrorMessage] = useState('')
     const provider = new GoogleAuthProvider();
 
+    console.log("🚀 ~ AuthProvider ~ user:", user)
+    console.log("🚀 ~ AuthProvider ~ errorMessage:", errorMessage)
     // logout
     const logout = () => {
         setLoading(true)
@@ -25,14 +27,20 @@ const AuthProvider = ({ children }) => {
     }
 
     // Login email password
-    const loginWithEmailPassword = (email, password) => {
-        setLoading(true)
-        return signInWithEmailAndPassword(auth, email, password)
-            .catch(error => {
-                setLoading(false)
-                setErrorMessage(error.message)
-            })
-    }
+    // Login with email/password
+    const loginWithEmailPassword = async (email, password) => {
+        setLoading(true);
+        setErrorMessage('');
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            return userCredential;
+        } catch (error) {
+            setErrorMessage(error.message);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // signup with email password
     const signupWithEmailPassword = (email, password, name, photoUrl) => {

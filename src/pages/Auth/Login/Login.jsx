@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../../../context/AuthContext';
@@ -7,11 +7,35 @@ import toast from 'react-hot-toast';
 import saveUserDataOnDb from '../../../utils/saveUserDb';
 import { useTitle, PAGE_TITLES } from '../../../hooks/useTitle';
 
+const usersData = {
+    customer: {
+        email: 'jihad@user.com',
+        password: 'Jihad100'
+    },
+    seller: {
+        email: 'jihad@code.com',
+        password: 'Jihad100'
+    },
+    admin: {
+        email: 'jihad@admin.com',
+        password: 'Jihad100'
+    }
+}
+
 const Login = () => {
     useTitle(PAGE_TITLES.LOGIN);
     const [showPassword, setShowPassword] = useState(false);
-    const { loginWithEmailPassword, loginWithGoogle, loginWithGitHub, loading } = useContext(AuthContext);
+    const { loginWithEmailPassword, loginWithGoogle, loginWithGitHub, loading, errorMessage } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
+
+
+    // error handling
+    useEffect(() => {
+        if (errorMessage) {
+            toast.error(errorMessage);
+        }
+    }, [errorMessage])
 
     const {
         register,
@@ -69,6 +93,20 @@ const Login = () => {
         }
     };
 
+    // handle input demo credential
+    const handleDemoCredential = (userType) => {
+        const credentials = usersData[userType];
+        if (credentials) {
+            setUserCredentials(credentials);
+            reset({
+                email: credentials.email,
+                password: credentials.password
+            });
+        } else {
+            toast.error('Invalid user type selected');
+        }
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
@@ -83,6 +121,23 @@ const Login = () => {
 
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                        {/* Select User Type */}
+                        <div>
+                            <label htmlFor="userType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Demo User Credentials
+                            </label>
+                            <select
+                                id="userType"
+                                onChange={(e) => handleDemoCredential(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            >
+                                <option value="">Select user type</option>
+                                <option value="buyer">Buyer</option>
+                                <option value="seller">Seller</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
                         {/* Email Field */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
