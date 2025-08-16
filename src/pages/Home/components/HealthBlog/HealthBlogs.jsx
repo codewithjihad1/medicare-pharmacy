@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { FaUserMd, FaCalendarAlt, FaArrowRight } from 'react-icons/fa';
 import axiosInstance from '../../../../api/axiosInstance';
 
 const HealthBlog = () => {
+    const navigate = useNavigate();
     const [healthBlogs, setHealthBlogs] = useState([]);
 
     useEffect(() => {
         // Fetch health blogs from the server
         const fetchHealthBlogs = async () => {
-            const response = await axiosInstance.get('/health-blogs');
-            setHealthBlogs(response.data);
+            try {
+                const response = await axiosInstance.get('/health-blogs');
+                setHealthBlogs(response.data.slice(0, 6)); // Limit to 6 posts for preview
+            } catch (error) {
+                console.error('Failed to fetch health blogs:', error);
+            }
         };
 
         fetchHealthBlogs();
     }, []);
 
-
+    const handleBlogClick = (blogId) => {
+        navigate(`/health-blogs/${blogId}`);
+    };
 
     return (
         <section className="health-blog-section py-16 bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-800 dark:to-gray-900 transition-colors duration-300">
@@ -33,7 +41,11 @@ const HealthBlog = () => {
                 {/* Blog Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                     {healthBlogs.map((post) => (
-                        <div key={post.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/30 transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700">
+                        <div
+                            key={post._id || post.id}
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/30 transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 cursor-pointer"
+                            onClick={() => handleBlogClick(post._id || post.id)}
+                        >
                             <div className="relative overflow-hidden">
                                 <img
                                     src={post.image}
@@ -76,9 +88,12 @@ const HealthBlog = () => {
 
                 {/* View All Button */}
                 <div className="text-center">
-                    <button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/30 transform hover:scale-105">
+                    <Link
+                        to="/health-blogs"
+                        className="inline-block bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl dark:shadow-gray-900/20 dark:hover:shadow-gray-900/30 transform hover:scale-105"
+                    >
                         View All Health Articles
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>

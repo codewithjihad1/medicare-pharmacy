@@ -21,6 +21,7 @@ import AuthRouteProtect from "../components/common/AuthRouteProtect/AuthRoutePro
 import Dashboard from "../pages/Dashboard/Dashboard";
 import UpdateProfile from "../pages/Dashboard/User/components/UpdateProfile/UpdateProfile";
 import HealthBlog from "../pages/HealthBlog/HealthBlog";
+import HealthBlogDetails from "../pages/HealthBlog/HealthBlogDetails/HealthBlogDetails";
 
 const router = createBrowserRouter([
     {
@@ -64,8 +65,12 @@ const router = createBrowserRouter([
                 </ProtectedRoute>
             },
             {
-                path:"/health-blogs",
+                path: "/health-blogs",
                 Component: HealthBlog
+            },
+            {
+                path: "/health-blogs/:blogId",
+                Component: HealthBlogDetails
             }
         ],
     },
