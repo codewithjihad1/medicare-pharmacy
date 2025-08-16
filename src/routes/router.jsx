@@ -20,6 +20,7 @@ import SellerProtectedRoute from "../components/common/ProtectedRoute/SellerProt
 import AuthRouteProtect from "../components/common/AuthRouteProtect/AuthRouteProtect";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import UpdateProfile from "../pages/Dashboard/User/components/UpdateProfile/UpdateProfile";
+import HealthBlog from "../pages/HealthBlog/HealthBlog";
 
 const router = createBrowserRouter([
     {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
                         <UpdateProfile />
                     </div>
                 </ProtectedRoute>
+            },
+            {
+                path:"/health-blogs",
+                Component: HealthBlog
             }
         ],
     },

@@ -13,9 +13,11 @@ import axiosInstance from '../../../../api/axiosInstance'
 import LoadingSectionData from '../../../../components/ui/Loading/LoadingSectionData'
 import { useQueryConfig, queryKeys } from '../../../../hooks/useQueryConfig'
 import ErrorDataFetching from '../../../../components/ui/Error/ErrorDataFetching'
+import { useNavigate } from 'react-router'
 
 const DiscountProducts = () => {
   const queryConfig = useQueryConfig();
+  const navigate = useNavigate();
 
   // Fetch discount products using TanStack Query
   const {
@@ -112,7 +114,9 @@ const DiscountProducts = () => {
 
         {/* View All Button */}
         <div className="text-center mt-5">
-          <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button
+          onClick={() => navigate('/shop')}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
             View All Discount Products
           </button>
         </div>

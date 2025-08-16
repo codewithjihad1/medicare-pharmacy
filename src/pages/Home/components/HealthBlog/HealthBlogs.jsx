@@ -52,10 +52,6 @@ const HealthBlog = () => {
                                     {post.title}
                                 </h3>
 
-                                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                                    {post.excerpt}
-                                </p>
-
                                 <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                                     <div className="flex items-center gap-2">
                                         <FaUserMd className="text-blue-500 dark:text-blue-400" />
