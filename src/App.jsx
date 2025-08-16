@@ -5,10 +5,16 @@ import { AuthProvider } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReTitleProvider } from 're-title'
+import { useEffect } from 'react'
+import Aos from 'aos'
 
 const queryClient = new QueryClient()
 
 function App() {
+
+  useEffect(() => {
+    Aos.init();
+  }, []);
 
   return (
     <ReTitleProvider defaultTitle="MediShop - Your Trusted Online Pharmacy">

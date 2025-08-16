@@ -70,7 +70,7 @@ const HeroSlider = () => {
             >
                 {bannerAds.map((ad) => (
                     <SwiperSlide key={ad._id}>
-                        <div className="relative w-full h-full">
+                        <div className="relative w-full min-h-[90vh] h-full">
                             {/* Background Image with Overlay */}
                             <div
                                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
