@@ -28,7 +28,7 @@ const DiscountProducts = () => {
   } = useQuery({
     queryKey: queryKeys.discountProducts,
     queryFn: async () => {
-      const response = await axiosInstance.get('/medicines/discount-products');
+      const response = await axiosInstance.get('/medicines');
       return response.data;
     },
     ...queryConfig,
