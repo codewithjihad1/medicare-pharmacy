@@ -25,8 +25,8 @@ const HealthBlog = () => {
             const response = await axiosInstance.get('/health-blogs');
             return response.data;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        cacheTime: 10 * 60 * 1000, // 10 minutes
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 10 * 60 * 1000,
     });
 
     // Get unique categories

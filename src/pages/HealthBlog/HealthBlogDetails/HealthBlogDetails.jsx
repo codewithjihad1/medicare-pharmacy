@@ -175,7 +175,7 @@ const HealthBlogDetails = () => {
 
                 {/* Article Content */}
                 <div
-                    className="prose prose-lg dark:prose-invert max-w-none mb-8"
+                    className="prose prose-lg dark:prose-invert max-w-none mb-8 text-gray-400"
                     data-aos="fade-up"
                     data-aos-delay="400"
                 >

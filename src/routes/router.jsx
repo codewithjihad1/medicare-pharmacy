@@ -8,6 +8,7 @@ import Checkout from "../pages/Checkout/Checkout";
 import Invoice from "../pages/Invoice/Invoice";
 import CategoryList from "../pages/Category/CategoryList/CategoryList";
 import CategoryDetails from "../pages/Category/CategoryDetails/CategoryDetails";
+import MedicineDetails from "../pages/MedicineDetails/MedicineDetails";
 import Signup from "../pages/Auth/Signup/Signup";
 import Login from "../pages/Auth/Login/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             {
                 path: "shop",
                 Component: Shop,
+            },
+            {
+                path: "medicine/:medicineId",
+                Component: MedicineDetails,
             },
             {
                 path: "cart",

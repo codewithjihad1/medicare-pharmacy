@@ -1,8 +1,10 @@
 import React from 'react';
-import { FaEye, FaShoppingCart } from 'react-icons/fa';
+import { FaEye, FaShoppingCart, FaExternalLinkAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 import addToCart from '../../../../utils/addToCart';
 
 const MedicineTable = ({ medicines, onViewDetails, getDiscountedPrice }) => {
+    const navigate = useNavigate();
 
 
     return (
@@ -79,8 +81,8 @@ const MedicineTable = ({ medicines, onViewDetails, getDiscountedPrice }) => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${medicine.inStock && medicine.stockQuantity > 0
-                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                                         }`}>
                                         {medicine.inStock && medicine.stockQuantity > 0
                                             ? `In Stock (${medicine.stockQuantity})`
@@ -93,9 +95,16 @@ const MedicineTable = ({ medicines, onViewDetails, getDiscountedPrice }) => {
                                         <button
                                             onClick={() => onViewDetails(medicine)}
                                             className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 p-2 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
-                                            title="View Details"
+                                            title="Quick View"
                                         >
                                             <FaEye />
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/medicine/${medicine._id}`)}
+                                            className="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 p-2 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900"
+                                            title="View Full Details"
+                                        >
+                                            <FaExternalLinkAlt />
                                         </button>
                                         <button
                                             onClick={() => addToCart(medicine)}
