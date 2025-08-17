@@ -10,8 +10,10 @@ import 'swiper/css/effect-fade';
 import BannerLoading from '../../../components/ui/Loading/BannerLoading';
 import axiosInstance from '../../../api/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 
 const HeroSlider = () => {
+    const navigate = useNavigate();
     const { data: bannerAds, isLoading } = useQuery({
         queryKey: ['bannerAds'],
         queryFn: async () => {
@@ -21,8 +23,9 @@ const HeroSlider = () => {
         // staleTime: 5 * 60 * 1000, // 5 minutes
     });
 
-    const handleViewDetails = (advertisement) => {
-        console.log('View details for:', advertisement);
+    const handleViewDetails = (medicineId) => {
+        // Navigate to the medicine details page
+        navigate(`/medicine/${medicineId}`);
     };
 
     if (isLoading) {
@@ -122,7 +125,7 @@ const HeroSlider = () => {
                                             {/* Action Buttons */}
                                             <div className="flex flex-col sm:flex-row gap-4">
                                                 <button
-                                                    onClick={() => handleViewDetails(ad)}
+                                                    onClick={() => handleViewDetails(ad.medicineId)}
                                                     className="flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800"
                                                 >
                                                     <FaEye className="w-5 h-5" />
